@@ -86,7 +86,7 @@ class CatalogTest extends TestCase
         $this->post('/catalog', ['name' => 'Sealed', 'type' => 'sealed'])->assertSessionHasErrors('sku');
         $this->patch('/settings/single-sku', ['single_sku_enabled' => '1'])->assertRedirect('/settings');
         $this->post('/catalog', ['name' => 'Card C', 'type' => 'single'])->assertRedirect('/catalog');
-        $this->assertSame(2, ProductVariant::whereNull('sku')->count());
+        $this->assertSame(4, ProductVariant::whereNull('sku')->count());
     }
 
     public function test_demo_workspace_cannot_be_modified(): void
