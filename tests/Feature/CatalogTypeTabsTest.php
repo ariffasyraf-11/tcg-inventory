@@ -16,9 +16,9 @@ class CatalogTypeTabsTest extends TestCase
     {
         $owner = User::factory()->create();
         $workspace = Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Shop']);
-        Product::create(['workspace_id' => $workspace->id, 'name' => 'Single A', 'type' => 'single', 'active' => true]);
-        Product::create(['workspace_id' => $workspace->id, 'name' => 'Sealed B', 'type' => 'sealed', 'active' => true]);
-        Product::create(['workspace_id' => $workspace->id, 'name' => 'Archived Single', 'type' => 'single', 'active' => false]);
+        Product::create(['workspace_id' => $workspace->id, 'name' => 'Single A', 'type' => 'single', 'active' => true])->variants()->create(['sku' => 'S-1']);
+        Product::create(['workspace_id' => $workspace->id, 'name' => 'Sealed B', 'type' => 'sealed', 'active' => true])->variants()->create(['sku' => 'B-1']);
+        Product::create(['workspace_id' => $workspace->id, 'name' => 'Archived Single', 'type' => 'single', 'active' => false])->variants()->create(['sku' => 'S-2']);
 
         $this->actingAs($owner)->get('/catalog?type=single')->assertOk()
             ->assertSee('Singles &amp; Used', false)->assertSee('Single A')->assertDontSee('Sealed B')
