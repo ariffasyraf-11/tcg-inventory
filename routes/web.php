@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
     Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
     Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
+    Route::get('/workspace/invitations/inbox', [WorkspaceInvitationController::class, 'inbox'])->name('workspace-invitations.inbox');
+    Route::post('/workspace/invitations/inbox/{invitation}/accept', [WorkspaceInvitationController::class, 'acceptFromInbox'])->name('workspace-invitations.inbox.accept');
+    Route::post('/workspace/invitations/inbox/{invitation}/decline', [WorkspaceInvitationController::class, 'declineFromInbox'])->name('workspace-invitations.inbox.decline');
     Route::get('/workspace/invitations', [WorkspaceInvitationController::class, 'index'])->name('workspace-invitations.index');
     Route::post('/workspace/invitations', [WorkspaceInvitationController::class, 'store'])->middleware('throttle:10,1')->name('workspace-invitations.store');
     Route::get('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'show'])->name('workspace-invitations.show');
@@ -44,6 +47,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::patch('/settings/workspace', [SettingsController::class, 'workspaceName'])->name('settings.workspace');
+    Route::patch('/settings/catalog-edit-role', [SettingsController::class, 'catalogEditRole'])->name('settings.catalog-edit-role');
     Route::patch('/settings/single-sku', [SettingsController::class, 'singleSku'])->name('settings.single-sku');
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::get('/inventory/{item}', [InventoryController::class, 'show'])->name('inventory.show');
@@ -53,6 +57,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/catalog/{product}/image', [ProductImageController::class, 'show'])->name('catalog.image.show');
     Route::post('/catalog/{product}/image', [ProductImageController::class, 'store'])->name('catalog.image.store');
     Route::delete('/catalog/{product}/image', [ProductImageController::class, 'destroy'])->name('catalog.image.destroy');
+    Route::get('/catalog/{product}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
+    Route::patch('/catalog/{product}', [CatalogController::class, 'update'])->name('catalog.update');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });
 

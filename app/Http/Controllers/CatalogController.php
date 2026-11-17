@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Workspace;
+use App\Support\WorkspaceAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +80,31 @@ class CatalogController extends Controller
         });
 
         return to_route('catalog.index')->with('status', 'Product added to your catalog.');
+    }
+
+    public function edit(Request $request, Product $product): View
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
+
+        return view('catalog.edit', compact('workspace', 'product'));
+    }
+
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_if($workspace->is_demo, 403);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'active' => ['required', 'boolean'],
+        ]);
+        $product->update($data);
+
+        return to_route('catalog.index')->with('status', 'Product details updated.');
     }
 
     private function workspace(Request $request): Workspace
