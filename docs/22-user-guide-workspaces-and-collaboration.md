@@ -62,3 +62,7 @@ Proposed future workflow, subject to product approval:
 ## 8. Roadmap and release caveats
 
 Phase 6.5A is merged; image and inventory UX slices remain in progress/planned. Phase 7 must cover account recovery, verification, session management, security and backup/deployment before production readiness is claimed. See [05-roadmap.md](05-roadmap.md) and [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md).
+
+## Catalog input suggestions
+
+Condition (singles) and Language remain free-text fields with browser-native suggestion lists. Suggested condition values are Near Mint, Lightly Played, Moderately Played, Heavily Played and Damaged. Language suggestions are English and Japanese only. Users can still type other values; the suggestions are not restrictive validation. This applies to both new-product and existing-variant edit forms.
