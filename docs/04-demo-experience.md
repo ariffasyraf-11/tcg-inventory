@@ -16,3 +16,6 @@ From Sample Dragon's 12 units, select Receive, add 5 units at a sample unit cost
 
 ## UX checklist
 Responsive cards/tables, keyboard-usable controls, server-side validation errors, clear success messages, quantity and low-stock indicators, explicit **demo** label, and an obvious reset action. Demo totals are illustrative and must not claim production FIFO valuation.
+
+## Phase 4 implementation increment
+Authenticated `/demo/database` uses separate `demo_stock` and `demo_stock_movements` tables keyed by user. Reset only touches the authenticated user's demo records. This is a persistent isolated **sample** demo, not a production-domain-backed workspace: it does not exercise real `StockOperations`, inventory batches or FIFO cost. Domain parity remains pending.

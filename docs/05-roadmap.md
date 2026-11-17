@@ -8,7 +8,7 @@ This roadmap reflects the merged Laravel foundation and authenticated catalog. E
 | 1 | Session authentication, one private owner workspace, singles/sealed catalog | Authentication, cross-owner isolation and CI tests pass | Complete (PR #2; logout fix PR #5) |
 | 2 | Inventory items, receipt batches, immutable movement ledger, receiving and adjustments | Atomicity, authorization, no-negative-stock, batch reconciliation and rollback tests | Backend merged (PR #4); hardening pending |
 | 3 | Livewire 4 integration, stock management screens, basic profile and workspace settings | Livewire dependency locked; authenticated UX and settings tests pass | In progress: Blade stock UI merged (PR #6); owner settings in PR #7; Livewire pending |
-| 4 | Isolated database-backed demo workspace and guided stock journey | Demo cannot access or mutate real owner data; reset is authorized | Planned |
+| 4 | Isolated database-backed demo workspace and guided stock journey | Demo cannot access or mutate real owner data; reset is authorized | In progress: isolated DB sample demo; domain parity pending |
 | 5 | Manual sales and persisted FIFO batch allocations | Deterministic FIFO, correct cost, no overselling and audit tests | Planned |
 | 6 | Dashboard, low-stock thresholds and CSV import preview/validation | Accurate summaries; no silent partial imports | Planned |
 | 7 | Release hardening: password recovery, email verification, active sessions, security, backup and deployment | Recovery and verification tests; production checklist and restore rehearsal pass | Planned |
