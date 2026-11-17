@@ -26,38 +26,40 @@
     @if(app(\App\Support\WorkspaceAccess::class)->allows(auth()->user(), $workspace, 'catalog'))
     <section class="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 class="mb-4 text-xl font-semibold">Add a product</h2>
-        <form action="{{ route('catalog.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
+        <form id="catalog-create-form" action="{{ route('catalog.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
             @csrf
             <label class="text-sm font-medium">Product name
                 <input name="name" value="{{ old('name') }}" required maxlength="255" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Type
-                <select name="type" required class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <select name="type" id="catalog-product-type" required class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
                     <option value="single" @selected(old('type') === 'single')>Single card</option>
                     <option value="sealed" @selected(old('type') === 'sealed')>Sealed product</option>
                 </select>
             </label>
             <label class="text-sm font-medium">SKU @unless($workspace->single_sku_enabled)<span class="text-slate-500">(optional for singles)</span>@endunless
-                <input name="sku" value="{{ old('sku') }}" maxlength="100" @if($workspace->single_sku_enabled) required @endif class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" @if($workspace->single_sku_enabled) required @endif class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
                 <span class="mt-1 block text-xs text-slate-500">Sealed products always require SKU. Singles without SKU cannot use SKU-based CSV imports.</span>
             </label>
             <label class="text-sm font-medium">Condition (singles)
-                <input name="condition" list="catalog-condition-suggestions" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input data-single-field name="condition" list="catalog-condition-suggestions" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Language
                 <input name="language" list="catalog-language-suggestions" value="{{ old('language') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Finish (singles)
-                <input name="finish" value="{{ old('finish') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input data-single-field name="finish" list="catalog-finish-suggestions" value="{{ old('finish') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Card number (singles)
-                <input name="card_number" value="{{ old('card_number') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input data-single-field name="card_number" value="{{ old('card_number') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Sealed format
-                <input name="sealed_format" value="{{ old('sealed_format') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input data-sealed-field name="sealed_format" list="catalog-sealed-format-suggestions" value="{{ old('sealed_format') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <datalist id="catalog-condition-suggestions"><option value="Near Mint"></option><option value="Lightly Played"></option><option value="Moderately Played"></option><option value="Heavily Played"></option><option value="Damaged"></option></datalist>
             <datalist id="catalog-language-suggestions"><option value="English"></option><option value="Japanese"></option></datalist>
+            <datalist id="catalog-finish-suggestions"><option value="Non-Foil"></option><option value="Foil"></option><option value="Reverse Holo"></option><option value="Holofoil"></option><option value="Full Art"></option><option value="Textured"></option></datalist>
+            <datalist id="catalog-sealed-format-suggestions"><option value="Booster Pack"></option><option value="Booster Box"></option><option value="Elite Trainer Box"></option><option value="Starter Deck"></option><option value="Structure Deck"></option><option value="Theme Deck"></option><option value="Collection Box"></option><option value="Tin"></option><option value="Bundle"></option></datalist>
             <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 md:col-span-2">Add product</button>
         </form>
     </section>
@@ -84,4 +86,26 @@
         </table>
         <div class="p-5">{{ $products->links() }}</div>
     </section>
-</x-app-shell></body></html>
+</x-app-shell><script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('catalog-create-form');
+    if (!form) return;
+    const type = document.getElementById('catalog-product-type');
+    const sku = document.getElementById('catalog-sku');
+    const singleSkuRequired = @json((bool) $workspace->single_sku_enabled);
+    function syncTypeFields() {
+        const sealed = type.value === 'sealed';
+        form.querySelectorAll('[data-single-field]').forEach(input => {
+            input.disabled = sealed;
+            input.closest('label').classList.toggle('opacity-50', sealed);
+        });
+        form.querySelectorAll('[data-sealed-field]').forEach(input => {
+            input.disabled = !sealed;
+            input.closest('label').classList.toggle('opacity-50', !sealed);
+        });
+        sku.required = sealed || singleSkuRequired;
+    }
+    type.addEventListener('change', syncTypeFields);
+    syncTypeFields();
+});
+</script></body></html>

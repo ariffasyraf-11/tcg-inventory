@@ -66,3 +66,9 @@ Phase 6.5A is merged; image and inventory UX slices remain in progress/planned. 
 ## Catalog input suggestions
 
 Condition (singles) and Language remain free-text fields with browser-native suggestion lists. Suggested condition values are Near Mint, Lightly Played, Moderately Played, Heavily Played and Damaged. Language suggestions are English and Japanese only. Users can still type other values; the suggestions are not restrictive validation. This applies to both new-product and existing-variant edit forms.
+
+## Product-type-aware form and optional suggestions
+
+On Add Product, choosing **Sealed product** disables the singles-only Condition, Finish and Card number inputs. Choosing **Single card** disables Sealed format. Incompatible disabled inputs are not submitted, and the SKU field becomes required for sealed products even when singles SKU is optional. Values typed into temporarily disabled inputs are retained in the browser until submission, allowing the user to switch back without retyping. The server also validates incompatible attributes.
+
+Condition suggestions: Near Mint, Lightly Played, Moderately Played, Heavily Played, Damaged. Language suggestions: English, Japanese only. Finish suggestions: Non-Foil, Foil, Reverse Holo, Holofoil, Full Art, Textured. Sealed format suggestions: Booster Pack, Booster Box, Elite Trainer Box, Starter Deck, Structure Deck, Theme Deck, Collection Box, Tin, Bundle. All are non-restrictive text-input suggestions; Card number and SKU remain plain text without preset values. Existing-variant editing has matching Finish and Sealed format suggestions.
