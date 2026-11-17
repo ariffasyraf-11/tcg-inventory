@@ -18,7 +18,8 @@ class WorkspaceSwitchTest extends TestCase
         $owner = User::factory()->create();
         $member = User::factory()->create();
         $workspace = Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Shared Shop']);
-        Product::create(['workspace_id' => $workspace->id, 'name' => 'Shared Card', 'type' => 'single']);
+        $product = Product::create(['workspace_id' => $workspace->id, 'name' => 'Shared Card', 'type' => 'single']);
+        $product->variants()->create(['sku' => 'SHARED-001']);
         WorkspaceMembership::create(['workspace_id' => $workspace->id, 'user_id' => $member->id, 'role' => 'viewer']);
 
         $this->actingAs($member)->get('/workspaces/switch')->assertOk()->assertSee('Shared Shop');
