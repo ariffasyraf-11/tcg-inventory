@@ -120,6 +120,7 @@ class CsvPreviewController extends Controller
 
         return view('imports.preview', compact('rows', 'issues', 'headers', 'token'));
     }
+
     public function commit(Request $request, CommitCsvStockImport $import): RedirectResponse
     {
         $data = $request->validate(['token' => ['required', 'string', 'size:40']]);
