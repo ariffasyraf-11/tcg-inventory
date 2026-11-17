@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Workspace extends Model
 {
-    protected $fillable = ['owner_user_id', 'name', 'is_demo', 'single_sku_enabled'];
+    protected $fillable = ['owner_user_id', 'name', 'is_demo', 'single_sku_enabled', 'catalog_edit_role'];
 
     protected function casts(): array
     {

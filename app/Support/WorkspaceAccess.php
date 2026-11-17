@@ -31,7 +31,11 @@ class WorkspaceAccess
         return match ($ability) {
             'view' => in_array($role, ['owner', 'manager', 'inventory_operator', 'viewer'], true),
             'stock' => in_array($role, ['owner', 'manager', 'inventory_operator'], true),
-            'catalog', 'sales' => in_array($role, ['owner', 'manager'], true),
+            'catalog' => in_array($role, ['owner', 'manager'], true),
+            'catalog_edit' => $role === 'owner'
+                || ($role === 'manager' && in_array($workspace->catalog_edit_role, ['manager', 'inventory_operator'], true))
+                || ($role === 'inventory_operator' && $workspace->catalog_edit_role === 'inventory_operator'),
+            'sales' => in_array($role, ['owner', 'manager'], true),
             'manage' => $role === 'owner',
             default => false,
         };

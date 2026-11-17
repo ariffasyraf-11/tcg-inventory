@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::patch('/settings/workspace', [SettingsController::class, 'workspaceName'])->name('settings.workspace');
+    Route::patch('/settings/catalog-edit-role', [SettingsController::class, 'catalogEditRole'])->name('settings.catalog-edit-role');
     Route::patch('/settings/single-sku', [SettingsController::class, 'singleSku'])->name('settings.single-sku');
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::get('/inventory/{item}', [InventoryController::class, 'show'])->name('inventory.show');
@@ -53,6 +54,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/catalog/{product}/image', [ProductImageController::class, 'show'])->name('catalog.image.show');
     Route::post('/catalog/{product}/image', [ProductImageController::class, 'store'])->name('catalog.image.store');
     Route::delete('/catalog/{product}/image', [ProductImageController::class, 'destroy'])->name('catalog.image.destroy');
+    Route::get('/catalog/{product}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
+    Route::patch('/catalog/{product}', [CatalogController::class, 'update'])->name('catalog.update');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });
 

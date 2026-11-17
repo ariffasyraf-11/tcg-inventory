@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -64,6 +65,19 @@ class SettingsController extends Controller
         $workspace->update(['single_sku_enabled' => (bool) $data['single_sku_enabled']]);
 
         return to_route('settings.index')->with('status', 'Single-card SKU preference updated.');
+    }
+
+    public function catalogEditRole(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'catalog_edit_role' => ['required', Rule::in(['owner', 'manager', 'inventory_operator'])],
+        ]);
+
+        $workspace = $this->workspace($request);
+        abort_if($workspace->is_demo, 403);
+        $workspace->update($data);
+
+        return to_route('settings.index')->with('status', 'Catalog editing permission updated.');
     }
 
     private function workspace(Request $request): Workspace
