@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DemoInventoryController;
+use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'));
@@ -17,6 +18,9 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory/receive', [InventoryController::class, 'receive'])->name('inventory.receive');
+    Route::post('/inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });
