@@ -12,6 +12,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SkuPermissionsController;
 use App\Http\Controllers\WorkspaceInvitationController;
+use App\Http\Controllers\WorkspaceMemberController;
 use App\Http\Controllers\WorkspaceSwitchController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
     Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
     Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
+    Route::get('/workspace/members', [WorkspaceMemberController::class, 'index'])->name('workspace-members.index');
+    Route::patch('/workspace/members/{membership}', [WorkspaceMemberController::class, 'update'])->name('workspace-members.update');
+    Route::delete('/workspace/members/{membership}', [WorkspaceMemberController::class, 'destroy'])->name('workspace-members.destroy');
     Route::get('/workspaces/switch', [WorkspaceSwitchController::class, 'index'])->name('workspaces.switch.index');
     Route::post('/workspaces/switch/{workspace}', [WorkspaceSwitchController::class, 'update'])->name('workspaces.switch.update');
     Route::get('/workspace/invitations/inbox', [WorkspaceInvitationController::class, 'inbox'])->name('workspace-invitations.inbox');

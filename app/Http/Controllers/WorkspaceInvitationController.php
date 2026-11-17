@@ -52,7 +52,7 @@ class WorkspaceInvitationController extends Controller
             $invitation->update(['accepted_at' => now()]);
         });
 
-        return to_route('workspace-invitations.inbox')->with('status', 'Invitation accepted. Workspace switching will be available in a later update.');
+        return to_route('workspace-invitations.inbox')->with('status', 'Invitation accepted. Select the workspace from Switch workspace.');
     }
 
     public function declineFromInbox(Request $request, WorkspaceInvitation $invitation): RedirectResponse

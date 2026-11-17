@@ -17,6 +17,7 @@
                 ['workspaces.switch.index', 'Switch workspace', 'workspaces.switch.*'],
                 ['workspace-invitations.inbox', 'My invitations', 'workspace-invitations.inbox*'],
                 ['workspace-invitations.index', 'Invite staff', 'workspace-invitations.index'],
+                ['workspace-members.index', 'Members & roles', 'workspace-members.*'],
                 ['settings.sku-permissions', 'SKU permissions', 'settings.sku-permissions*'],
                 ['settings.index', 'Settings', 'settings.index'],
             ] as [$route, $label, $pattern])
