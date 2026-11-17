@@ -25,6 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware('auth')->group(function (): void {
     Route::get('/imports/preview', [CsvPreviewController::class, 'index'])->name('imports.index');
     Route::post('/imports/preview', [CsvPreviewController::class, 'preview'])->name('imports.preview');
+    Route::post('/imports/commit', [CsvPreviewController::class, 'commit'])->name('imports.commit');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::patch('/dashboard/threshold', [DashboardController::class, 'threshold'])->name('dashboard.threshold');
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
