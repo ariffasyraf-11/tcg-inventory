@@ -10,6 +10,7 @@ use App\Http\Controllers\PersistentDemoController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SkuPermissionsController;
 use App\Http\Controllers\WorkspaceInvitationController;
 use App\Http\Controllers\WorkspaceSwitchController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'show'])->name('workspace-invitations.show');
     Route::post('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'accept'])->name('workspace-invitations.accept');
     Route::delete('/workspace/invitations/{invitation}', [WorkspaceInvitationController::class, 'destroy'])->name('workspace-invitations.destroy');
+    Route::get('/settings/sku-permissions', [SkuPermissionsController::class, 'index'])->name('settings.sku-permissions');
+    Route::patch('/settings/sku-permissions', [SkuPermissionsController::class, 'update'])->name('settings.sku-permissions.update');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');

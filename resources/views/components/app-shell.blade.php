@@ -17,7 +17,8 @@
                 ['workspaces.switch.index', 'Switch workspace', 'workspaces.switch.*'],
                 ['workspace-invitations.inbox', 'My invitations', 'workspace-invitations.inbox*'],
                 ['workspace-invitations.index', 'Invite staff', 'workspace-invitations.index'],
-                ['settings.index', 'Settings', 'settings.*'],
+                ['settings.sku-permissions', 'SKU permissions', 'settings.sku-permissions*'],
+                ['settings.index', 'Settings', 'settings.index'],
             ] as [$route, $label, $pattern])
                 <a href="{{ route($route) }}" @if(request()->routeIs($pattern)) aria-current="page" @endif
                     class="block shrink-0 rounded-lg px-3 py-2.5 font-medium transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 {{ request()->routeIs($pattern) ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">{{ $label }}</a>
