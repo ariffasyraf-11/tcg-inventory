@@ -24,6 +24,49 @@ class WorkspaceInvitationController extends Controller
         ]);
     }
 
+    public function inbox(Request $request): View
+    {
+        $email = Str::lower(trim($request->user()->email));
+
+        return view('workspaces.invitation-inbox', [
+            'invitations' => WorkspaceInvitation::query()
+                ->where('email', $email)
+                ->with('workspace:id,name')
+                ->latest()
+                ->paginate(20),
+        ]);
+    }
+
+    public function acceptFromInbox(Request $request, WorkspaceInvitation $invitation): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $invitation): void {
+            $invitation = WorkspaceInvitation::whereKey($invitation->id)->lockForUpdate()->firstOrFail();
+            abort_unless(hash_equals($invitation->email, Str::lower(trim($request->user()->email))), 404);
+            abort_if($invitation->accepted_at || $invitation->revoked_at || $invitation->expires_at->isPast(), 404);
+            abort_if($invitation->workspace->is_demo || $invitation->workspace->owner_user_id === $request->user()->id, 403);
+
+            WorkspaceMembership::updateOrCreate(
+                ['workspace_id' => $invitation->workspace_id, 'user_id' => $request->user()->id],
+                ['role' => $invitation->role]
+            );
+            $invitation->update(['accepted_at' => now()]);
+        });
+
+        return to_route('workspace-invitations.inbox')->with('status', 'Invitation accepted. Workspace switching will be available in a later update.');
+    }
+
+    public function declineFromInbox(Request $request, WorkspaceInvitation $invitation): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $invitation): void {
+            $invitation = WorkspaceInvitation::whereKey($invitation->id)->lockForUpdate()->firstOrFail();
+            abort_unless(hash_equals($invitation->email, Str::lower(trim($request->user()->email))), 404);
+            abort_if($invitation->accepted_at || $invitation->revoked_at || $invitation->expires_at->isPast(), 404);
+            $invitation->update(['revoked_at' => now()]);
+        });
+
+        return to_route('workspace-invitations.inbox')->with('status', 'Invitation declined.');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $workspace = $this->ownedWorkspace($request);

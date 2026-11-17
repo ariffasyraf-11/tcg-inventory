@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
     Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
     Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
+    Route::get('/workspace/invitations/inbox', [WorkspaceInvitationController::class, 'inbox'])->name('workspace-invitations.inbox');
+    Route::post('/workspace/invitations/inbox/{invitation}/accept', [WorkspaceInvitationController::class, 'acceptFromInbox'])->name('workspace-invitations.inbox.accept');
+    Route::post('/workspace/invitations/inbox/{invitation}/decline', [WorkspaceInvitationController::class, 'declineFromInbox'])->name('workspace-invitations.inbox.decline');
     Route::get('/workspace/invitations', [WorkspaceInvitationController::class, 'index'])->name('workspace-invitations.index');
     Route::post('/workspace/invitations', [WorkspaceInvitationController::class, 'store'])->middleware('throttle:10,1')->name('workspace-invitations.store');
     Route::get('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'show'])->name('workspace-invitations.show');

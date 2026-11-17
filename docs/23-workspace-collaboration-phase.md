@@ -22,7 +22,7 @@ Enable an owner to invite staff to a workspace while retaining private stock and
 ## Delivery slices
 
 1. **6.5D1 — Membership schema and policies (in development):** workspace memberships with unique workspace/user pair, explicit role values, owner-access compatibility, workspace context resolution, and tests for no cross-tenant reads or writes.
-2. **6.5D2 — Invitations (in development):** owner-only invite creation, expiring single-use tokens stored hashed, accept/decline/revoke, duplicate and expired invitation handling, no user enumeration. D2 uses authenticated email-matched acceptance and an owner-copied one-time link (no automated email delivery or Phase 7 email verification yet). Link is displayed once and only its SHA-256 hash is stored.
+2. **6.5D2 — Invitations (in development):** owner-only invite creation, expiring single-use tokens stored hashed, accept/decline/revoke, duplicate and expired invitation handling, no user enumeration. D2 includes authenticated email-matched acceptance and an owner-copied one-time link (no automated email delivery or Phase 7 email verification yet). Link is displayed once and only its SHA-256 hash is stored. A follow-up recipient inbox at `/workspace/invitations/inbox` lists invitations for the authenticated email and permits accept/decline without requiring the original token. No email delivery is claimed.
 3. **6.5D3 — Role-aware UI and workspace switching (in development):** member-scoped navigation, selected-workspace context, role checks on every server endpoint, and authorized member removal.
 4. **6.5D4 — Regression and documentation:** stock/sales actor audit, demo isolation, cross-owner attacks, concurrent access, membership revocation, and updated user guide/test account scenarios.
 
