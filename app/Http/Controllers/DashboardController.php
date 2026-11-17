@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -33,7 +34,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function threshold(Request $request): \Illuminate\Http\RedirectResponse
+    public function threshold(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'inventory_item_id' => ['required', 'integer', 'exists:inventory_items,id'],
