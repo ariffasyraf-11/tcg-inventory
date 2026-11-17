@@ -20,6 +20,11 @@ class Workspace extends Model
         return $this->belongsTo(User::class, 'owner_user_id');
     }
 
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(WorkspaceMembership::class);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
