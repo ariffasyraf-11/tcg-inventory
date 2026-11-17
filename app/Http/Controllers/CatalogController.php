@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class CatalogController extends Controller
@@ -18,12 +19,18 @@ class CatalogController extends Controller
     {
         $workspace = $this->workspace($request);
 
+        $status = $request->query('status', 'active');
+        abort_unless(in_array($status, ['active', 'archived', 'all'], true), 404);
+
         return view('catalog.index', [
             'products' => Product::query()
                 ->where('workspace_id', $workspace->id)
+                ->when($status === 'active', fn ($query) => $query->where('active', true))
+                ->when($status === 'archived', fn ($query) => $query->where('active', false))
                 ->with('variants')
                 ->latest()
-                ->paginate(20),
+                ->paginate(20)->withQueryString(),
+            'status' => $status,
             'workspace' => $workspace,
         ]);
     }
@@ -90,6 +97,8 @@ class CatalogController extends Controller
         abort_unless($product->workspace_id === $workspace->id, 404);
         abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
 
+        $product->load('variants');
+
         return view('catalog.edit', compact('workspace', 'product'));
     }
 
@@ -107,6 +116,58 @@ class CatalogController extends Controller
         $product->update($data);
 
         return to_route('catalog.index')->with('status', 'Product details updated.');
+    }
+
+    public function updateSku(Request $request, Product $product): RedirectResponse
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_if($workspace->is_demo, 403);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
+
+        $data = $request->validate([
+            'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
+            'sku' => [$product->type === 'sealed' || $workspace->single_sku_enabled ? 'required' : 'nullable', 'nullable', 'string', 'max:100'],
+        ]);
+        $sku = trim((string) ($data['sku'] ?? ''));
+        DB::transaction(function () use ($request, $product, $workspace, $data, $sku): void {
+            $variant = $product->variants()->whereKey($data['variant_id'])->lockForUpdate()->firstOrFail();
+            $oldSku = $variant->sku;
+            $newSku = $sku !== '' ? $sku : null;
+            if ($oldSku === $newSku) {
+                return;
+            }
+            $exists = Product::query()->where('workspace_id', $workspace->id)
+                ->whereHas('variants', fn ($query) => $query->where('sku', $newSku)->whereKeyNot($variant->id))
+                ->exists();
+            if ($newSku !== null && $exists) {
+                throw ValidationException::withMessages(['sku' => 'SKU is already in use in this workspace.']);
+            }
+            $variant->update(['sku' => $newSku]);
+            DB::table('product_sku_changes')->insert([
+                'product_variant_id' => $variant->id,
+                'actor_user_id' => $request->user()->id,
+                'old_sku' => $oldSku,
+                'new_sku' => $newSku,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
+
+        return to_route('catalog.edit', $product)->with('status', 'SKU updated. Review any external CSV references to the previous SKU.');
+    }
+
+    public function destroy(Request $request, Product $product): RedirectResponse
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_if($workspace->is_demo, 403);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
+
+        // Archiving retains variants, stock movements, sales and images for audit purposes.
+        $product->update(['active' => false]);
+
+        return to_route('catalog.index')->with('status', 'Product archived (inactive). Inventory and sales history have been preserved.');
     }
 
     private function workspace(Request $request): Workspace

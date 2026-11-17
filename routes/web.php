@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/catalog/{product}/image', [ProductImageController::class, 'destroy'])->name('catalog.image.destroy');
     Route::get('/catalog/{product}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
     Route::patch('/catalog/{product}', [CatalogController::class, 'update'])->name('catalog.update');
+    Route::patch('/catalog/{product}/sku', [CatalogController::class, 'updateSku'])->name('catalog.sku.update');
+    Route::delete('/catalog/{product}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });
 
