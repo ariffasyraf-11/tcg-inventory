@@ -50,3 +50,7 @@ Workspace owners manage SKU requirements at `/settings/sku-permissions`. The pag
 - Keep Phase 7 separate until 6.5C and 6.5D are implemented and regression-tested.
 
 See [22-user-guide-workspaces-and-collaboration.md](22-user-guide-workspaces-and-collaboration.md) for the current user-facing implementation status.
+
+## D3 member management
+
+Owner-only `/workspace/members` lists active memberships, allows role changes and removes members. Membership removal revokes workspace selection on the next request while preserving historical movement actor IDs. All mutation endpoints verify the membership belongs to the authenticated owner's workspace. Invitation history is separate from active membership management.

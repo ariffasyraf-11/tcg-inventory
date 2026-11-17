@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Workspace invitations</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <body class="bg-slate-50"><x-app-shell title="Workspace invitations">
 <h1 class="mb-4 text-2xl font-bold">Invite to {{ $workspace->name }}</h1>
-<p class="mb-4 text-sm text-slate-600">Invitations are delivered by sharing the one-time link yourself. Email delivery is not enabled yet. Accepted members cannot switch into this workspace until Phase 6.5D3.</p>
+<p class="mb-4 text-sm text-slate-600">Invitations are delivered by sharing the one-time link yourself. Email delivery is not enabled yet. Accepted members can switch to this workspace using Switch workspace. Manage active memberships under Members & roles.</p>
 @if(session('invitation_link'))<div class="mb-4 rounded border bg-amber-50 p-4"><strong>Copy this link now (shown once):</strong><input readonly aria-label="Invitation link" class="mt-2 w-full border p-2" value="{{ session('invitation_link') }}"></div>@endif
 @if(session('status'))<p role="status">{{ session('status') }}</p>@endif
 @if($errors->any())<div role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
