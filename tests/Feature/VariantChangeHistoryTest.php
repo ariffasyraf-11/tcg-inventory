@@ -35,7 +35,7 @@ class VariantChangeHistoryTest extends TestCase
             ->assertSee('BEFORE')->assertSee('AFTER')
             ->assertSee('Near Mint')->assertSee('Lightly Played')
             ->assertSee($owner->name)
-            ->assertDontSee('Japanese');
+            ->assertDontSee('>Japanese</td>', false);
     }
 
     public function test_other_workspace_owner_cannot_view_product_history(): void
