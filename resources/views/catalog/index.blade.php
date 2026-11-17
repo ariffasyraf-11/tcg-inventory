@@ -61,7 +61,7 @@
     </section>
     @endif
     <section class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-        <h2 class="p-5 text-xl font-semibold">Your products</h2>
+        <div class="flex flex-wrap items-center justify-between gap-3 p-5"><h2 class="text-xl font-semibold">Your products</h2><nav aria-label="Catalog status filter" class="flex gap-3 text-sm"><a href="{{ route('catalog.index', ['status' => 'active']) }}" class="{{ $status === 'active' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Active</a><a href="{{ route('catalog.index', ['status' => 'archived']) }}" class="{{ $status === 'archived' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Archived</a><a href="{{ route('catalog.index', ['status' => 'all']) }}" class="{{ $status === 'all' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">All</a></nav></div>
         <table class="w-full min-w-[600px] text-left text-sm">
             <thead class="bg-slate-100"><tr><th class="p-4">Image</th><th class="p-4">Product</th><th class="p-4">Type</th><th class="p-4">SKU</th><th class="p-4">Variant</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
@@ -76,7 +76,7 @@
                         </tr>
                     @endforeach
                 @empty
-                    <tr><td colspan="5" class="p-5 text-slate-600">No products yet. Add your first single or sealed product above.</td></tr>
+                    <tr><td colspan="5" class="p-5 text-slate-600">No products match this filter.</td></tr>
                 @endforelse
             </tbody>
         </table>

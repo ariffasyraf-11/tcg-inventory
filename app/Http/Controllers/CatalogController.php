@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class CatalogController extends Controller
@@ -18,12 +19,18 @@ class CatalogController extends Controller
     {
         $workspace = $this->workspace($request);
 
+        $status = $request->query('status', 'active');
+        abort_unless(in_array($status, ['active', 'archived', 'all'], true), 404);
+
         return view('catalog.index', [
             'products' => Product::query()
                 ->where('workspace_id', $workspace->id)
+                ->when($status === 'active', fn ($query) => $query->where('active', true))
+                ->when($status === 'archived', fn ($query) => $query->where('active', false))
                 ->with('variants')
                 ->latest()
-                ->paginate(20),
+                ->paginate(20)->withQueryString(),
+            'status' => $status,
             'workspace' => $workspace,
         ]);
     }
@@ -134,7 +141,7 @@ class CatalogController extends Controller
                 ->whereHas('variants', fn ($query) => $query->where('sku', $newSku)->whereKeyNot($variant->id))
                 ->exists();
             if ($newSku !== null && $exists) {
-                throw \Illuminate\Validation\ValidationException::withMessages(['sku' => 'SKU is already in use in this workspace.']);
+                throw ValidationException::withMessages(['sku' => 'SKU is already in use in this workspace.']);
             }
             $variant->update(['sku' => $newSku]);
             DB::table('product_sku_changes')->insert([
