@@ -10,6 +10,7 @@ use App\Http\Controllers\PersistentDemoController;
 use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\WorkspaceInvitationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'));
@@ -34,6 +35,11 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
     Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
     Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
+    Route::get('/workspace/invitations', [WorkspaceInvitationController::class, 'index'])->name('workspace-invitations.index');
+    Route::post('/workspace/invitations', [WorkspaceInvitationController::class, 'store'])->middleware('throttle:10,1')->name('workspace-invitations.store');
+    Route::get('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'show'])->name('workspace-invitations.show');
+    Route::post('/workspace/invitations/accept/{token}', [WorkspaceInvitationController::class, 'accept'])->name('workspace-invitations.accept');
+    Route::delete('/workspace/invitations/{invitation}', [WorkspaceInvitationController::class, 'destroy'])->name('workspace-invitations.destroy');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
