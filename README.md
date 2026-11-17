@@ -9,10 +9,10 @@ A demo-first inventory application for individual trading-card sellers and small
 - ✅ Fresh official Laravel 13 application skeleton on `feature/fresh-laravel-foundation`
 - ✅ Development/build and demo-first specifications
 - ⏳ Install dependencies and validate a clean local boot
-- ⏳ Local-only interactive UX demonstration
+- ✅ Local-only interactive session UX demo at `/demo` (not yet dependency-tested)
 - ⏳ Production inventory models, transactions, authentication and stock workflows
 
-The local UX prototype (once added) is **not** a production stock management service. It must not be used to record actual inventory.
+The local UX prototype is **not** a production stock management service. It must not be used to record actual inventory.
 
 ## Local setup
 
