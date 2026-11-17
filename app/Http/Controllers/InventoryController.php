@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Inventory\StockOperations;
 use App\Models\InventoryItem;
 use App\Models\ProductVariant;
+use App\Models\StockMovement;
 use App\Models\Workspace;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,14 @@ class InventoryController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('inventory.index', compact('workspace', 'items', 'variants'));
+        $movements = StockMovement::query()
+            ->whereHas('item', fn ($query) => $query->where('workspace_id', $workspace->id))
+            ->with(['item.variant.product', 'batch'])
+            ->latest('id')
+            ->limit(30)
+            ->get();
+
+        return view('inventory.index', compact('workspace', 'items', 'variants', 'movements'));
     }
 
     public function receive(Request $request, StockOperations $operations): RedirectResponse
