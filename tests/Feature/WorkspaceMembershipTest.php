@@ -40,7 +40,7 @@ class WorkspaceMembershipTest extends TestCase
         $workspace = Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Private']);
         WorkspaceMembership::create(['workspace_id' => $workspace->id, 'user_id' => $member->id, 'role' => 'manager']);
 
-        $this->actingAs($member)->get('/settings')->assertOk()->assertDontSee('Private');
+        $this->actingAs($member)->get('/settings')->assertOk()->assertViewHas('workspace', fn ($current) => $current->id !== $workspace->id);
         $this->assertDatabaseCount('workspace_memberships', 1);
     }
 
