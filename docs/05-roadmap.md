@@ -15,6 +15,8 @@ This roadmap reflects the merged Laravel foundation and authenticated catalog. E
 | 7 | Release hardening: password recovery, email verification, active sessions, security, backup and deployment | Recovery and verification tests; production checklist and restore rehearsal pass | Planned |
 | Post-MVP | Optional invitations, workspace membership and limited roles | Explicit product decision and permission matrix before development | Deferred |
 
+User-facing usage and explicit implemented/planned collaboration boundaries are documented in [22-user-guide-workspaces-and-collaboration.md](22-user-guide-workspaces-and-collaboration.md).
+
 ## User management decisions
 
 - **MVP access:** one owner account per workspace. No staff invitations, global administrator UI, branches or subscription roles.
