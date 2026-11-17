@@ -1,6 +1,6 @@
 # Phase 6.5D — Workspace and collaboration
 
-**Status: active working phase, not implemented.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The currently deployed access model remains one owner per workspace until implementation and authorization tests pass.
+**Status: D1 membership foundation in development; shared access and invitations not implemented.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The existing request controllers continue to use owner-only workspace resolution. D1 adds schema and a standalone authorization service, but deliberately does not enable shared access until later slices audit and adopt the service.
 
 ## Goal and boundaries
 
@@ -17,11 +17,11 @@ Enable an owner to invite staff to a workspace while retaining private stock and
 | Manage invitations and roles | Yes | No | No | No |
 | Workspace settings | Yes | No | No | No |
 
-**Owner is not a removable membership role.** Existing owner relationship remains authoritative. Manager access to sensitive financial details and sales privileges should be explicitly reviewed before coding.
+**Owner is not a removable membership role.** Existing owner relationship remains authoritative. The initial authorization service reserves sales to owner/manager; inventory operators do not receive sales permission. Manager access to sensitive financial details requires review before activation.
 
 ## Delivery slices
 
-1. **6.5D1 — Membership schema and policies:** workspace memberships with unique workspace/user pair, explicit role values, owner-access compatibility, workspace context resolution, and tests for no cross-tenant reads or writes.
+1. **6.5D1 — Membership schema and policies (in development):** workspace memberships with unique workspace/user pair, explicit role values, owner-access compatibility, workspace context resolution, and tests for no cross-tenant reads or writes.
 2. **6.5D2 — Invitations:** owner-only invite creation, expiring single-use tokens stored hashed, accept/decline/revoke, duplicate and expired invitation handling, no user enumeration. Account verification/mail dependency must be resolved without claiming Phase 7 email verification exists.
 3. **6.5D3 — Role-aware UI and workspace switching:** member-scoped navigation, selected-workspace context, role checks on every server endpoint, and authorized member removal.
 4. **6.5D4 — Regression and documentation:** stock/sales actor audit, demo isolation, cross-owner attacks, concurrent access, membership revocation, and updated user guide/test account scenarios.
