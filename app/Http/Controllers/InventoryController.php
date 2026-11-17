@@ -81,7 +81,8 @@ class InventoryController extends Controller
 
     public function adjust(Request $request, StockOperations $operations): RedirectResponse
     {
-        abort_unless($this->workspace($request)->owner_user_id === $request->user()->id, 403);
+        $workspace = $this->workspace($request);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'stock'), 403);
         $data = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:2147483647'],
