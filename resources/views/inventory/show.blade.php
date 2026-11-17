@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Inventory detail · TCG Inventory</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
+<body class="bg-slate-50 text-slate-900"><x-app-shell title="Inventory detail">
+<a href="{{ route('inventory.index') }}" class="text-sm text-indigo-700 underline">Back to inventory</a>
+<header class="my-6"><h1 class="text-3xl font-bold">{{ $item->variant->product->name }}</h1><p class="text-slate-600">{{ $item->variant->sku ?: 'No SKU · Variant #'.$item->variant->id }} · {{ ucfirst($item->variant->product->type) }}</p></header>
+<div class="grid gap-5 md:grid-cols-2">
+<section class="rounded-xl border bg-white p-5"><h2 class="text-lg font-semibold">Current balance</h2><p class="mt-3 text-3xl font-bold">{{ $item->quantity_on_hand }}</p><p class="text-sm text-slate-600">Units on hand</p>@if($item->variant->product->image_path)<img class="mt-4 h-40 w-40 rounded-lg object-cover" src="{{ route('catalog.image.show', $item->variant->product) }}" alt="{{ $item->variant->product->name }} image">@endif</section>
+<section class="rounded-xl border bg-white p-5"><h2 class="text-lg font-semibold">Receipt batches</h2><ul class="mt-3 space-y-2">@forelse($item->batches as $batch)<li class="border-b pb-2 text-sm">Batch #{{ $batch->id }} · {{ $batch->quantity_remaining }} remaining</li>@empty<li class="text-sm text-slate-500">No receipt batches</li>@endforelse</ul></section>
+</div>
+<section class="mt-6 overflow-x-auto rounded-xl border bg-white"><h2 class="p-5 text-xl font-semibold">Movement history</h2><table class="w-full min-w-[600px] text-left text-sm"><thead class="bg-slate-100"><tr><th class="p-3">Date</th><th class="p-3">Type</th><th class="p-3">Change</th><th class="p-3">Reason</th></tr></thead><tbody>@forelse($movements as $movement)<tr class="border-t"><td class="p-3">{{ $movement->created_at }}</td><td class="p-3">{{ ucfirst($movement->type) }}</td><td class="p-3">{{ $movement->signed_quantity }}</td><td class="p-3">{{ $movement->reason }}</td></tr>@empty<tr><td colspan="4" class="p-4 text-slate-500">No movements yet</td></tr>@endforelse</tbody></table><div class="p-5">{{ $movements->links() }}</div></section>
+</x-app-shell></body></html>
