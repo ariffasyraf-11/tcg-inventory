@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CsvPreviewController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PersistentDemoController;
@@ -21,6 +22,8 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/imports/preview', [CsvPreviewController::class, 'index'])->name('imports.index');
+    Route::post('/imports/preview', [CsvPreviewController::class, 'preview'])->name('imports.preview');
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
     Route::post('/sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
