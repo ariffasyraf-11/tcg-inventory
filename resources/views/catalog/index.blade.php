@@ -36,8 +36,9 @@
                     <option value="sealed" @selected(old('type') === 'sealed')>Sealed product</option>
                 </select>
             </label>
-            <label class="text-sm font-medium">SKU
-                <input name="sku" value="{{ old('sku') }}" required maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+            <label class="text-sm font-medium">SKU @unless($workspace->single_sku_enabled)<span class="text-slate-500">(optional for singles)</span>@endunless
+                <input name="sku" value="{{ old('sku') }}" maxlength="100" @if($workspace->single_sku_enabled) required @endif class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <span class="mt-1 block text-xs text-slate-500">Sealed products always require SKU. Singles without SKU cannot use SKU-based CSV imports.</span>
             </label>
             <label class="text-sm font-medium">Condition (singles)
                 <input name="condition" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
@@ -67,7 +68,7 @@
                         <tr>
                             <td class="p-4 font-semibold">{{ $product->name }}</td>
                             <td class="p-4">{{ ucfirst($product->type) }}</td>
-                            <td class="p-4">{{ $variant->sku }}</td>
+                            <td class="p-4">{{ $variant->sku ?: 'No SKU' }}</td>
                             <td class="p-4">{{ collect([$variant->condition, $variant->language, $variant->finish, $variant->card_number, $variant->sealed_format])->filter()->join(' · ') ?: 'Standard' }}</td>
                         </tr>
                     @endforeach

@@ -53,6 +53,19 @@ class SettingsController extends Controller
         return to_route('settings.index')->with('status', 'Workspace updated.');
     }
 
+    public function singleSku(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'single_sku_enabled' => ['required', 'boolean'],
+        ]);
+
+        $workspace = $this->workspace($request);
+        abort_if($workspace->is_demo, 403);
+        $workspace->update(['single_sku_enabled' => (bool) $data['single_sku_enabled']]);
+
+        return to_route('settings.index')->with('status', 'Single-card SKU preference updated.');
+    }
+
     private function workspace(Request $request): Workspace
     {
         return Workspace::query()->firstOrCreate(

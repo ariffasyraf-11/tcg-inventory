@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::patch('/settings/workspace', [SettingsController::class, 'workspaceName'])->name('settings.workspace');
+    Route::patch('/settings/single-sku', [SettingsController::class, 'singleSku'])->name('settings.single-sku');
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::post('/inventory/receive', [InventoryController::class, 'receive'])->name('inventory.receive');
     Route::post('/inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
