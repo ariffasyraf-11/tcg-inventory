@@ -75,18 +75,18 @@ class CatalogTest extends TestCase
         $workspace = Workspace::create(['owner_user_id' => $user->id, 'name' => 'My shop']);
 
         $this->actingAs($user)->post('/catalog', ['name' => 'Card', 'type' => 'single'])
-            ->assertSessionHasErrors('sku');
+            ->assertRedirect('/catalog');
 
         $this->patch('/settings/single-sku', ['single_sku_enabled' => '0'])->assertRedirect('/settings');
         $this->post('/catalog', ['name' => 'Card A', 'type' => 'single'])->assertRedirect('/catalog');
         $this->post('/catalog', ['name' => 'Card B', 'type' => 'single'])->assertRedirect('/catalog');
-        $this->assertSame(2, Product::where('workspace_id', $workspace->id)->count());
-        $this->assertSame(2, ProductVariant::whereNull('sku')->count());
+        $this->assertSame(3, Product::where('workspace_id', $workspace->id)->count());
+        $this->assertSame(3, ProductVariant::whereNull('sku')->count());
 
         $this->post('/catalog', ['name' => 'Sealed', 'type' => 'sealed'])->assertSessionHasErrors('sku');
         $this->patch('/settings/single-sku', ['single_sku_enabled' => '1'])->assertRedirect('/settings');
-        $this->post('/catalog', ['name' => 'Card C', 'type' => 'single'])->assertSessionHasErrors('sku');
-        $this->assertSame(2, ProductVariant::whereNull('sku')->count());
+        $this->post('/catalog', ['name' => 'Card C', 'type' => 'single'])->assertRedirect('/catalog');
+        $this->assertSame(4, ProductVariant::whereNull('sku')->count());
     }
 
     public function test_demo_workspace_cannot_be_modified(): void

@@ -48,7 +48,7 @@ class CatalogController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', Rule::in(['single', 'sealed'])],
-            'sku' => [$workspace->single_sku_enabled || $request->input('type') === 'sealed' ? 'required' : 'nullable', 'string', 'max:100'],
+            'sku' => [$request->input('type') === 'sealed' ? 'required' : 'nullable', 'string', 'max:100'],
             'condition' => ['nullable', 'string', 'max:40'],
             'language' => ['nullable', 'string', 'max:40'],
             'finish' => ['nullable', 'string', 'max:40'],

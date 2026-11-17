@@ -60,3 +60,7 @@ Open Catalog → Edit for a product and scroll to **Variant change history**. Au
 ## Catalog category tabs and singles SKU editing
 
 Catalog has two tabs, **Singles & Used** and **Sealed Products**, filtering the existing product types within the selected workspace. Active/Archived/All filters and pagination preserve the selected tab. Used cards remain singles with a condition, not a new product type. SKU-less singles show their stable internal variant ID. On the edit page, singles SKU is displayed disabled/read-only; existing SKU values are preserved. Sealed products retain editable, required SKUs. The existing workspace setting still controls whether SKU is required when creating singles, and no database identifiers or historical audit entries are rewritten.
+
+## Collapsible catalog creation and SKU-free singles
+
+The catalog opens with the registered product list prominent. The **Add a product** disclosure is closed by default and expands automatically when validation fails. Selecting **Single card** disables SKU entry; selecting **Sealed product** enables and requires SKU. New singles created through the form are stored with no SKU and identified by internal variant ID. API submissions can still supply an optional SKU for compatibility. Previously saved singles SKUs remain untouched for historical imports and records. The workspace singles-SKU setting is retained for compatibility but no longer controls new catalog creation.
