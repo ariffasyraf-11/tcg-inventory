@@ -7,7 +7,6 @@ PHP >= 8.3 compatible with Laravel 13, Composer 2, Node.js/npm compatible with V
 ```powershell
 git clone https://github.com/ariffasyraf-11/tcg-inventory.git
 cd tcg-inventory
-git checkout feature/fresh-laravel-foundation
 composer install
 Copy-Item .env.example .env
 php artisan key:generate
@@ -23,7 +22,6 @@ php artisan serve
 ```bash
 git clone https://github.com/ariffasyraf-11/tcg-inventory.git
 cd tcg-inventory
-git checkout feature/fresh-laravel-foundation
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -55,6 +53,11 @@ Transfer only custom TCG application files (models, actions, views, components, 
 ## Production
 `APP_ENV=production`, `APP_DEBUG=false`, HTTPS, secure sessions, backups and secret management. Never expose local demo write/reset routes or shared demo credentials on production.
 
-## Authenticated catalog (feature branch)
+## Authenticated catalog (main)
 
-On `feature/owner-catalog-foundation`, run migrations and open `/register`, then `/catalog`. No default seller credentials are created. The catalog is not yet Livewire-based. Production stock operations are not yet implemented.
+On `main`, run migrations and open `/register`, then `/catalog`. No default seller credentials are created. The catalog is not yet Livewire-based. Production stock operations are not yet implemented.
+
+
+## Test identities
+
+See [10-test-accounts.md](10-test-accounts.md). No test users or passwords are provisioned by default; register example-only identities locally and do not use shared production credentials.
