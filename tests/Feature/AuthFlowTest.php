@@ -29,7 +29,7 @@ class AuthFlowTest extends TestCase
 
         $this->actingAs($user)->get('/catalog')
             ->assertOk()
-            ->assertSee('Signed in as '.$user->name)
+            ->assertSee($user->name)
             ->assertSee('action="'.route('logout').'"', false)
             ->assertSee('method="POST"', false)
             ->assertSee('Log out');

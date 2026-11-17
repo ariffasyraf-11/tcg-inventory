@@ -6,21 +6,13 @@
     <title>Product catalog · TCG Inventory</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900">
-<main class="mx-auto max-w-6xl px-4 py-8">
+<body class="bg-slate-50 text-slate-900">
+<x-app-shell title="Product catalog">
     <header class="mb-8">
-        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <span class="text-sm text-slate-600">Signed in as {{ auth()->user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Log out</button>
-            </form>
-        </div>
+        
         <p class="text-sm font-semibold uppercase tracking-wider text-indigo-700">TCG Inventory</p>
         <h1 class="mt-1 text-3xl font-bold">Product catalog</h1>
-        <a href="{{ route('settings.index') }}" class="mt-3 mr-4 inline-block font-semibold text-indigo-700 underline">Settings</a>
-        <a href="{{ route('demo.persistent') }}" class="mt-3 mr-4 inline-block font-semibold text-indigo-700 underline">Private demo</a>
-        <a href="{{ route('inventory.index') }}" class="mt-3 inline-block font-semibold text-indigo-700 underline">Manage stock</a>
+        
         <p class="mt-2 text-sm text-slate-600">Private workspace: {{ $workspace->name }}. Manage stock from the inventory screen.</p>
     </header>
     @if (session('status'))
@@ -86,6 +78,4 @@
         </table>
         <div class="p-5">{{ $products->links() }}</div>
     </section>
-</main>
-</body>
-</html>
+</x-app-shell></body></html>
