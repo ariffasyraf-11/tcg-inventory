@@ -8,6 +8,7 @@ use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Models\Workspace;
 use App\Support\WorkspaceContext;
+use App\Support\WorkspaceAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -59,7 +60,8 @@ class InventoryController extends Controller
 
     public function receive(Request $request, StockOperations $operations): RedirectResponse
     {
-        abort_unless($this->workspace($request)->owner_user_id === $request->user()->id, 403);
+        $workspace = $this->workspace($request);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'stock'), 403);
         $data = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:2147483647'],
@@ -70,7 +72,8 @@ class InventoryController extends Controller
             $request->user(),
             ProductVariant::findOrFail($data['variant_id']),
             (int) $data['quantity'],
-            $data['unit_cost']
+            $data['unit_cost'],
+            $workspace
         );
 
         return to_route('inventory.index')->with('status', 'Stock received successfully.');
@@ -89,7 +92,8 @@ class InventoryController extends Controller
             $request->user(),
             ProductVariant::findOrFail($data['variant_id']),
             (int) $data['quantity'],
-            $data['reason']
+            $data['reason'],
+            $workspace
         );
 
         return to_route('inventory.index')->with('status', 'Stock adjustment recorded.');

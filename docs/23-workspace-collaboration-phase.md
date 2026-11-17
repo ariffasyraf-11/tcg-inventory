@@ -1,6 +1,6 @@
 # Phase 6.5D — Workspace and collaboration
 
-**Status: D1/D2 and product edit/inbox merged; D3 workspace selection and scoped catalog/inventory browsing in development. Shared stock mutations and financial screens are not enabled.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The existing request controllers continue to use owner-only workspace resolution. D1 adds schema and a standalone authorization service, but deliberately does not enable shared access until later slices audit and adopt the service.
+**Status: D1/D2 and product edit/inbox merged; D3 workspace selection and scoped catalog/inventory browsing in development. Stock operations for manager and inventory operator are being enabled with explicit selected-workspace authorization; sales and financial screens remain owner-only.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The existing request controllers continue to use owner-only workspace resolution. D1 adds schema and a standalone authorization service, but deliberately does not enable shared access until later slices audit and adopt the service.
 
 ## Goal and boundaries
 
@@ -34,7 +34,7 @@ The first edit slice updates **product name and active status only**. Type, SKU 
 
 ## D3 incremental rollout
 
-The first workspace-switching slice allows members to select an accepted workspace and browse its catalog and inventory history. Catalog creation and inventory mutations remain owner-only or blocked for members until the stock and sales action services are made workspace-aware and audited. Dashboard, sales, CSV import, image mutation and settings retain their existing owner-scoped behavior and do not automatically inherit the selected workspace. Revoked membership invalidates selected context on the next request.
+The first workspace-switching slice allows members to select an accepted workspace and browse its catalog and inventory history. Catalog creation remains restricted to owner/manager by policy. Stock receiving and adjustments are authorized for owner/manager/inventory operator against the selected workspace in the D3 stock slice, with actor attribution retained. Sales and CSV imports remain owner-scoped. Dashboard, sales, CSV import, image mutation and settings retain their existing owner-scoped behavior and do not automatically inherit the selected workspace. Revoked membership invalidates selected context on the next request.
 
 ## Safety and acceptance
 

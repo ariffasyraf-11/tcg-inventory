@@ -4,18 +4,20 @@ namespace App\Actions\Inventory;
 
 use App\Models\ProductVariant;
 use App\Models\User;
+use App\Models\Workspace;
+use App\Support\WorkspaceAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class StockOperations
 {
-    public function receive(User $actor, ProductVariant $variant, int $quantity, string $unitCost): void
+    public function receive(User $actor, ProductVariant $variant, int $quantity, string $unitCost, ?Workspace $workspace = null): void
     {
         if ($quantity < 1 || ! preg_match('/^\d{1,10}(\.\d{1,2})?$/', $unitCost)) {
             throw ValidationException::withMessages(['quantity' => 'Positive quantity and valid unit cost required.']);
         }
 
-        $workspaceId = $this->authorize($actor, $variant);
+        $workspaceId = $this->authorize($actor, $variant, $workspace);
 
         DB::transaction(function () use ($actor, $variant, $quantity, $unitCost, $workspaceId) {
             $item = DB::table('inventory_items')->where('product_variant_id', $variant->id)->lockForUpdate()->first();
@@ -47,7 +49,7 @@ class StockOperations
         }, 3);
     }
 
-    public function adjustOut(User $actor, ProductVariant $variant, int $quantity, string $reason): void
+    public function adjustOut(User $actor, ProductVariant $variant, int $quantity, string $reason, ?Workspace $workspace = null): void
     {
         if ($quantity < 1 || trim($reason) === '' || mb_strlen($reason) > 500) {
             throw ValidationException::withMessages(['quantity' => 'Positive quantity and reason (up to 500 characters) required.']);
@@ -88,11 +90,11 @@ class StockOperations
         }, 3);
     }
 
-    private function authorize(User $actor, ProductVariant $variant): int
+    private function authorize(User $actor, ProductVariant $variant, ?Workspace $workspace = null): int
     {
-        $workspace = DB::table('workspaces')->where('owner_user_id', $actor->id)->first();
+        $workspace ??= Workspace::query()->where('owner_user_id', $actor->id)->first();
 
-        if (! $workspace || $workspace->is_demo || ! DB::table('products')
+        if (! $workspace || $workspace->is_demo || ! app(WorkspaceAccess::class)->allows($actor, $workspace, 'stock') || ! DB::table('products')
             ->where('id', $variant->product_id)->where('workspace_id', $workspace->id)->exists()) {
             abort(403);
         }
