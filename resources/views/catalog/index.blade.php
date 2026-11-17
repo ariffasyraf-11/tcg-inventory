@@ -37,7 +37,7 @@
                     <option value="sealed" @selected(old('type') === 'sealed')>Sealed product</option>
                 </select>
             </label>
-            <label class="text-sm font-medium">SKU @unless($workspace->single_sku_enabled)<span class="text-slate-500">(optional for singles)</span>@endunless
+            <label class="text-sm font-medium">SKU <span class="text-slate-500">(optional for singles when enabled in workspace settings)</span>
                 <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" @if($workspace->single_sku_enabled) required @endif class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
                 <span class="mt-1 block text-xs text-slate-500">Sealed products always require SKU. Singles without SKU cannot use SKU-based CSV imports.</span>
             </label>
@@ -64,8 +64,12 @@
         </form>
     </section>
     @endif
+    <nav aria-label="Product categories" class="mb-4 flex gap-2 border-b border-slate-200" role="tablist">
+        <a role="tab" aria-selected="{{ $type === 'single' ? 'true' : 'false' }}" href="{{ route('catalog.index', ['type' => 'single', 'status' => $status]) }}" class="rounded-t-lg px-5 py-3 text-sm font-semibold {{ $type === 'single' ? 'border-b-2 border-indigo-600 bg-white text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Singles &amp; Used</a>
+        <a role="tab" aria-selected="{{ $type === 'sealed' ? 'true' : 'false' }}" href="{{ route('catalog.index', ['type' => 'sealed', 'status' => $status]) }}" class="rounded-t-lg px-5 py-3 text-sm font-semibold {{ $type === 'sealed' ? 'border-b-2 border-indigo-600 bg-white text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Sealed Products</a>
+    </nav>
     <section class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-3 p-5"><h2 class="text-xl font-semibold">Your products</h2><nav aria-label="Catalog status filter" class="flex gap-3 text-sm"><a href="{{ route('catalog.index', ['status' => 'active']) }}" class="{{ $status === 'active' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Active</a><a href="{{ route('catalog.index', ['status' => 'archived']) }}" class="{{ $status === 'archived' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Archived</a><a href="{{ route('catalog.index', ['status' => 'all']) }}" class="{{ $status === 'all' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">All</a></nav></div>
+        <div class="flex flex-wrap items-center justify-between gap-3 p-5"><h2 class="text-xl font-semibold">{{ $type === 'single' ? 'Singles & Used' : 'Sealed Products' }}</h2><nav aria-label="Catalog status filter" class="flex gap-3 text-sm"><a href="{{ route('catalog.index', ['type' => $type, 'status' => 'active']) }}" class="{{ $status === 'active' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Active</a><a href="{{ route('catalog.index', ['type' => $type, 'status' => 'archived']) }}" class="{{ $status === 'archived' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">Archived</a><a href="{{ route('catalog.index', ['type' => $type, 'status' => 'all']) }}" class="{{ $status === 'all' ? 'font-bold text-indigo-700' : 'text-slate-600' }}">All</a></nav></div>
         <table class="w-full min-w-[600px] text-left text-sm">
             <thead class="bg-slate-100"><tr><th class="p-4">Image</th><th class="p-4">Product</th><th class="p-4">Type</th><th class="p-4">SKU</th><th class="p-4">Variant</th></tr></thead>
             <tbody class="divide-y divide-slate-100">
@@ -75,7 +79,7 @@
                             <td class="p-4"><div class="flex flex-col gap-2">@if($product->image_path)<img src="{{ route('catalog.image.show', $product) }}" alt="{{ $product->name }} image" loading="lazy" class="h-20 w-20 rounded-lg border object-cover">@else<div class="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-500">No image</div>@endif
 @if($workspace->owner_user_id === auth()->id())<form action="{{ route('catalog.image.store', $product) }}" method="POST" enctype="multipart/form-data" class="space-y-1">@csrf<label class="block text-xs">Image<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required class="block w-40 text-xs"></label><button class="rounded bg-slate-800 px-2 py-1 text-xs text-white">Upload</button></form>@if($product->image_path)<form action="{{ route('catalog.image.destroy', $product) }}" method="POST">@csrf @method('DELETE')<button class="text-xs text-red-700 underline">Remove image</button></form>@endif @endif</div></td><td class="p-4 font-semibold">{{ $product->name }} @unless($product->active)<span class="text-xs text-amber-700">(Archived)</span>@endunless @if(app(\App\Support\WorkspaceAccess::class)->allows(auth()->user(), $workspace, 'catalog_edit'))<a class="ml-2 text-xs font-normal text-indigo-700 underline" href="{{ route('catalog.edit', $product) }}">Edit</a>@endif</td>
                             <td class="p-4">{{ ucfirst($product->type) }}</td>
-                            <td class="p-4">{{ $variant->sku ?: 'No SKU' }}</td>
+                            <td class="p-4">{{ $variant->sku ?: 'No SKU · Variant #'.$variant->id }}</td>
                             <td class="p-4">{{ collect([$variant->condition, $variant->language, $variant->finish, $variant->card_number, $variant->sealed_format])->filter()->join(' · ') ?: 'Standard' }}</td>
                         </tr>
                     @endforeach

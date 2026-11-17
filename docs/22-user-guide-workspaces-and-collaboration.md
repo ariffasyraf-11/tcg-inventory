@@ -56,3 +56,7 @@ Condition suggestions: Near Mint, Lightly Played, Moderately Played, Heavily Pla
 ## Viewing variant change history
 
 Open Catalog → Edit for a product and scroll to **Variant change history**. Authorized editors can see recorded SKU and variant-attribute changes across that product's variants, newest first, with timestamp, variant ID, field, previous value, new value and actor. The table is read-only and retains records when an actor account is deleted. It does not claim to track product name/visibility changes or initial variant creation.
+
+## Catalog category tabs and singles SKU editing
+
+Catalog has two tabs, **Singles & Used** and **Sealed Products**, filtering the existing product types within the selected workspace. Active/Archived/All filters and pagination preserve the selected tab. Used cards remain singles with a condition, not a new product type. SKU-less singles show their stable internal variant ID. On the edit page, singles SKU is displayed disabled/read-only; existing SKU values are preserved. Sealed products retain editable, required SKUs. The existing workspace setting still controls whether SKU is required when creating singles, and no database identifiers or historical audit entries are rewritten.
