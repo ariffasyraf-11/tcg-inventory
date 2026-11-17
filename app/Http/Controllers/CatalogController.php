@@ -157,6 +157,51 @@ class CatalogController extends Controller
         return to_route('catalog.edit', $product)->with('status', 'SKU updated. Review any external CSV references to the previous SKU.');
     }
 
+    public function updateVariant(Request $request, Product $product): RedirectResponse
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_if($workspace->is_demo, 403);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
+
+        $data = $request->validate([
+            'variant_id' => ['required', 'integer'],
+            'condition' => ['nullable', 'string', 'max:40'],
+            'language' => ['nullable', 'string', 'max:40'],
+            'finish' => ['nullable', 'string', 'max:40'],
+            'card_number' => ['nullable', 'string', 'max:100'],
+            'sealed_format' => ['nullable', 'string', 'max:100'],
+        ]);
+        $attributes = $product->type === 'single'
+            ? ['condition', 'language', 'finish', 'card_number']
+            : ['language', 'sealed_format'];
+
+        DB::transaction(function () use ($request, $product, $data, $attributes): void {
+            $variant = $product->variants()->whereKey($data['variant_id'])->lockForUpdate()->firstOrFail();
+            foreach ($attributes as $attribute) {
+                $oldValue = $variant->{$attribute};
+                $newValue = trim((string) ($data[$attribute] ?? '')) ?: null;
+                if ($oldValue === $newValue) {
+                    continue;
+                }
+
+                $variant->{$attribute} = $newValue;
+                DB::table('product_variant_attribute_changes')->insert([
+                    'product_variant_id' => $variant->id,
+                    'actor_user_id' => $request->user()->id,
+                    'attribute' => $attribute,
+                    'old_value' => $oldValue,
+                    'new_value' => $newValue,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+            $variant->save();
+        });
+
+        return to_route('catalog.edit', $product)->with('status', 'Variant details updated and changes recorded.');
+    }
+
     public function destroy(Request $request, Product $product): RedirectResponse
     {
         $workspace = $this->workspace($request);
