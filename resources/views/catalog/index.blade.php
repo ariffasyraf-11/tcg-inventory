@@ -18,6 +18,7 @@
         </div>
         <p class="text-sm font-semibold uppercase tracking-wider text-indigo-700">TCG Inventory</p>
         <h1 class="mt-1 text-3xl font-bold">Product catalog</h1>
+        <a href="{{ route('settings.index') }}" class="mt-3 mr-4 inline-block font-semibold text-indigo-700 underline">Settings</a>
         <a href="{{ route('inventory.index') }}" class="mt-3 inline-block font-semibold text-indigo-700 underline">Manage stock</a>
         <p class="mt-2 text-sm text-slate-600">Private workspace: {{ $workspace->name }}. Manage stock from the inventory screen.</p>
     </header>

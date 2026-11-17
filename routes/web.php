@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'));
@@ -18,6 +19,10 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+    Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
+    Route::patch('/settings/workspace', [SettingsController::class, 'workspaceName'])->name('settings.workspace');
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::post('/inventory/receive', [InventoryController::class, 'receive'])->name('inventory.receive');
     Route::post('/inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
