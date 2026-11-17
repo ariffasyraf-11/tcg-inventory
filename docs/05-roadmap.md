@@ -11,3 +11,7 @@
 | 6 | Security, CI, deployment and backup docs | Release checklist passes |
 
 Each phase should be a small PR; no direct merge without test/build review. Phase 0 UI session operations are deliberately not production stock writes.
+
+## Current work
+
+`feature/owner-catalog-foundation` implements basic registration/login, one private owner workspace, products and variants, and a Blade catalog. Livewire 4 integration and stock tables are not yet complete. No stock quantity is modified by catalog operations.

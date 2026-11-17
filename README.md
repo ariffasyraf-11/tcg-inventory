@@ -10,9 +10,14 @@ A demo-first inventory application for individual trading-card sellers and small
 - ✅ Development/build and demo-first specifications
 - ⏳ Install dependencies and validate a clean local boot
 - ✅ Local-only interactive session UX demo at `/demo` (not yet dependency-tested)
-- ⏳ Production inventory models, transactions, authentication and stock workflows
+- 🔧 Owner-scoped catalog and basic session authentication in follow-up PR (not yet merged)
+- ⏳ Production inventory batches, transactions and stock workflows
 
 The local UX prototype is **not** a production stock management service. It must not be used to record actual inventory.
+
+## Catalog development
+
+On `feature/owner-catalog-foundation`, create an account at `/register`, then visit `/catalog` to add singles or sealed products. This is a basic authenticated catalog, not stock management. See `docs/09-auth-and-catalog.md`.
 
 ## Local setup
 

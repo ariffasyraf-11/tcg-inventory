@@ -54,3 +54,7 @@ Transfer only custom TCG application files (models, actions, views, components, 
 
 ## Production
 `APP_ENV=production`, `APP_DEBUG=false`, HTTPS, secure sessions, backups and secret management. Never expose local demo write/reset routes or shared demo credentials on production.
+
+## Authenticated catalog (feature branch)
+
+On `feature/owner-catalog-foundation`, run migrations and open `/register`, then `/catalog`. No default seller credentials are created. The catalog is not yet Livewire-based. Production stock operations are not yet implemented.
