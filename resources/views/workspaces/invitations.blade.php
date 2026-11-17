@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Workspace invitations</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
+<body class="bg-slate-50"><x-app-shell title="Workspace invitations">
+<h1 class="mb-4 text-2xl font-bold">Invite to {{ $workspace->name }}</h1>
+<p class="mb-4 text-sm text-slate-600">Invitations are delivered by sharing the one-time link yourself. Email delivery is not enabled yet. Accepted members cannot switch into this workspace until Phase 6.5D3.</p>
+@if(session('invitation_link'))<div class="mb-4 rounded border bg-amber-50 p-4"><strong>Copy this link now (shown once):</strong><input readonly aria-label="Invitation link" class="mt-2 w-full border p-2" value="{{ session('invitation_link') }}"></div>@endif
+@if(session('status'))<p role="status">{{ session('status') }}</p>@endif
+@if($errors->any())<div role="alert">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
+<form method="POST" action="{{ route('workspace-invitations.store') }}" class="mb-6 flex flex-wrap gap-3 rounded-xl border bg-white p-5">@csrf<label>Email<input type="email" name="email" required class="block rounded border p-2"></label><label>Role<select name="role" class="block rounded border p-2"><option value="viewer">Viewer</option><option value="inventory_operator">Inventory operator</option><option value="manager">Manager</option></select></label><button class="self-end rounded bg-indigo-700 px-4 py-2 text-white">Create invitation</button></form>
+<h2 class="mb-3 text-lg font-semibold">Invitation history</h2><ul class="space-y-2">@forelse($invitations as $invitation)<li class="rounded border bg-white p-3">{{ $invitation->email }} · {{ $invitation->role }} · @if($invitation->accepted_at)Accepted@elseif($invitation->revoked_at)Revoked@elseif($invitation->expires_at->isPast())Expired@else Pending <form method="POST" action="{{ route('workspace-invitations.destroy', $invitation) }}" class="inline">@csrf @method('DELETE')<button class="ml-3 text-red-700 underline">Revoke</button></form>@endif</li>@empty<li>No invitations yet</li>@endforelse</ul>
+</x-app-shell></body></html>
