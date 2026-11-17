@@ -25,9 +25,9 @@ class InventoryBrowseTest extends TestCase
 
         $this->actingAs($owner)->get('/inventory/'.$item->id)->assertOk()->assertSee('Rare Dragon');
         $this->get('/inventory?q=Dragon')->assertOk()->assertSee('Rare Dragon');
-        $this->get('/inventory?q=Missing')->assertOk()->assertDontSee('Rare Dragon');
+        $this->get('/inventory?q=Missing')->assertOk()->assertViewHas('items', fn ($items) => $items->total() === 0);
 
         $this->actingAs($other)->get('/inventory/'.$item->id)->assertNotFound();
-        $this->get('/inventory?q=Dragon')->assertOk()->assertDontSee('Rare Dragon');
+        $this->get('/inventory?q=Dragon')->assertOk()->assertViewHas('items', fn ($items) => $items->total() === 0);
     }
 }
