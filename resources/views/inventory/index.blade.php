@@ -5,7 +5,7 @@
 <main class="mx-auto max-w-6xl px-4 py-8">
     <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div><p class="text-sm font-semibold uppercase text-indigo-700">TCG Inventory</p><h1 class="text-3xl font-bold">Stock management</h1><p class="text-sm text-slate-600">{{ $workspace->name }}</p></div>
-        <div class="flex items-center gap-4"><a class="text-indigo-700 underline" href="{{ route('imports.index') }}">CSV preview</a><a class="text-indigo-700 underline" href="{{ route('catalog.index') }}">Catalog</a><a class="text-indigo-700 underline" href="{{ route('sales.index') }}">Sales</a><form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg border bg-white px-4 py-2">Log out</button></form></div>
+        <div class="flex items-center gap-4"><a class="text-indigo-700 underline" href="{{ route('dashboard.index') }}">Dashboard</a><a class="text-indigo-700 underline" href="{{ route('imports.index') }}">CSV preview</a><a class="text-indigo-700 underline" href="{{ route('catalog.index') }}">Catalog</a><a class="text-indigo-700 underline" href="{{ route('sales.index') }}">Sales</a><form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg border bg-white px-4 py-2">Log out</button></form></div>
     </header>
     @if (session('status'))<p role="status" class="mb-4 rounded-lg bg-emerald-100 p-3">{{ session('status') }}</p>@endif
     @if ($errors->any())<div role="alert" class="mb-4 rounded-lg bg-red-100 p-3"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
