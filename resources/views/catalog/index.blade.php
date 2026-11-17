@@ -42,10 +42,10 @@
                 <span class="mt-1 block text-xs text-slate-500">Sealed products always require SKU. Singles without SKU cannot use SKU-based CSV imports.</span>
             </label>
             <label class="text-sm font-medium">Condition (singles)
-                <input name="condition" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input name="condition" list="catalog-condition-suggestions" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Language
-                <input name="language" value="{{ old('language') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <input name="language" list="catalog-language-suggestions" value="{{ old('language') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
             <label class="text-sm font-medium">Finish (singles)
                 <input name="finish" value="{{ old('finish') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
@@ -56,6 +56,8 @@
             <label class="text-sm font-medium">Sealed format
                 <input name="sealed_format" value="{{ old('sealed_format') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
+            <datalist id="catalog-condition-suggestions"><option value="Near Mint"></option><option value="Lightly Played"></option><option value="Moderately Played"></option><option value="Heavily Played"></option><option value="Damaged"></option></datalist>
+            <datalist id="catalog-language-suggestions"><option value="English"></option><option value="Japanese"></option></datalist>
             <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 md:col-span-2">Add product</button>
         </form>
     </section>
