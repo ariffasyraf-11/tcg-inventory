@@ -36,6 +36,10 @@ The first edit slice updates **product name and active status only**. Type, SKU 
 
 The first workspace-switching slice allows members to select an accepted workspace and browse its catalog and inventory history. Catalog creation and inventory mutations remain owner-only or blocked for members until the stock and sales action services are made workspace-aware and audited. Dashboard, sales, CSV import, image mutation and settings retain their existing owner-scoped behavior and do not automatically inherit the selected workspace. Revoked membership invalidates selected context on the next request.
 
+## Dedicated SKU permissions
+
+Workspace owners manage SKU requirements at `/settings/sku-permissions`. The page separates the current enforceable SKU-required toggle from the future permission to change an existing SKU. Existing SKU editing remains disabled until a safe rename workflow with uniqueness and import reference checks is developed. This setting is scoped to the owner workspace and cannot be changed by invited members.
+
 ## Safety and acceptance
 
 - All existing owner-only endpoints must be audited before enabling member access; changing sidebar visibility alone is insufficient.
