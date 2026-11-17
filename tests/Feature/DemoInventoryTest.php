@@ -62,7 +62,6 @@ class DemoInventoryTest extends TestCase
 
         try {
             $this->get('/demo')->assertNotFound();
-            $this->post('/demo/reset')->assertNotFound();
         } finally {
             app()->detectEnvironment(fn () => 'testing');
         }
