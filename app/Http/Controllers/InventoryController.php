@@ -7,6 +7,7 @@ use App\Models\InventoryItem;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Models\Workspace;
+use App\Support\WorkspaceContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -58,6 +59,7 @@ class InventoryController extends Controller
 
     public function receive(Request $request, StockOperations $operations): RedirectResponse
     {
+        abort_unless($this->workspace($request)->owner_user_id === $request->user()->id, 403);
         $data = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:2147483647'],
@@ -76,6 +78,7 @@ class InventoryController extends Controller
 
     public function adjust(Request $request, StockOperations $operations): RedirectResponse
     {
+        abort_unless($this->workspace($request)->owner_user_id === $request->user()->id, 403);
         $data = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:2147483647'],
@@ -94,9 +97,6 @@ class InventoryController extends Controller
 
     private function workspace(Request $request): Workspace
     {
-        return Workspace::query()->firstOrCreate(
-            ['owner_user_id' => $request->user()->id],
-            ['name' => $request->user()->name."'s inventory", 'is_demo' => false]
-        );
+        return app(WorkspaceContext::class)->current($request);
     }
 }

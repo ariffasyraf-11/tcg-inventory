@@ -14,6 +14,7 @@
                 ['sales.index', 'Sales', 'sales.*'],
                 ['imports.index', 'CSV preview', 'imports.*'],
                 ['demo.persistent', 'Private demo', 'demo.persistent*'],
+                ['workspaces.switch.index', 'Switch workspace', 'workspaces.switch.*'],
                 ['workspace-invitations.inbox', 'My invitations', 'workspace-invitations.inbox*'],
                 ['workspace-invitations.index', 'Invite staff', 'workspace-invitations.index'],
                 ['settings.index', 'Settings', 'settings.*'],

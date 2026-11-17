@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Workspace;
 use App\Support\WorkspaceAccess;
+use App\Support\WorkspaceContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class CatalogController extends Controller
     {
         $workspace = $this->workspace($request);
         abort_if($workspace->is_demo, 403, 'Demo workspaces are read-only.');
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog'), 403);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -109,9 +111,6 @@ class CatalogController extends Controller
 
     private function workspace(Request $request): Workspace
     {
-        return Workspace::query()->firstOrCreate(
-            ['owner_user_id' => $request->user()->id],
-            ['name' => $request->user()->name."'s inventory", 'is_demo' => false]
-        );
+        return app(WorkspaceContext::class)->current($request);
     }
 }

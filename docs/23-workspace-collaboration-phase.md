@@ -1,6 +1,6 @@
 # Phase 6.5D — Workspace and collaboration
 
-**Status: D1 and D2 merged; D3 product-edit permissions in development. Workspace switching and shared application access remain unimplemented.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The existing request controllers continue to use owner-only workspace resolution. D1 adds schema and a standalone authorization service, but deliberately does not enable shared access until later slices audit and adopt the service.
+**Status: D1/D2 and product edit/inbox merged; D3 workspace selection and scoped catalog/inventory browsing in development. Shared stock mutations and financial screens are not enabled.** This moves collaboration from the deferred Post-MVP backlog into the pre-Phase-7 roadmap. The existing request controllers continue to use owner-only workspace resolution. D1 adds schema and a standalone authorization service, but deliberately does not enable shared access until later slices audit and adopt the service.
 
 ## Goal and boundaries
 
@@ -31,6 +31,10 @@ Enable an owner to invite staff to a workspace while retaining private stock and
 A workspace-scoped `catalog_edit_role` setting controls the minimum staff role allowed to edit product information: `owner` (owner only), `manager` (owner and manager), or `inventory_operator` (owner, manager and inventory operator). Viewer never edits. The default is manager. This is not a system-wide toggle; every seller controls their own workspace. Server-side checks remain mandatory.
 
 The first edit slice updates **product name and active status only**. Type, SKU and variant attributes remain immutable through this form until dedicated inventory-safe change handling and audit rules are designed. Existing owner-only routing means this setting does not yet grant members access.
+
+## D3 incremental rollout
+
+The first workspace-switching slice allows members to select an accepted workspace and browse its catalog and inventory history. Catalog creation and inventory mutations remain owner-only or blocked for members until the stock and sales action services are made workspace-aware and audited. Dashboard, sales, CSV import, image mutation and settings retain their existing owner-scoped behavior and do not automatically inherit the selected workspace. Revoked membership invalidates selected context on the next request.
 
 ## Safety and acceptance
 
