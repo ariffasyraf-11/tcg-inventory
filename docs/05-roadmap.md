@@ -1,6 +1,6 @@
 # Phased build roadmap
 
-This roadmap reflects the merged Laravel foundation and authenticated catalog. Each phase is delivered in a focused PR, with CI and review before merge. The currently implemented access model is owner-only. Phase 6.5D plans collaboration without implying that shared access is already available.
+This roadmap reflects the merged Laravel foundation and authenticated catalog. Each phase is delivered in a focused PR, with CI and review before merge. Workspace collaboration is implemented for invitations, memberships, switching, shared catalog browsing and stock operations. Some screens remain owner-scoped, and final D4 regression is ongoing.
 
 | Phase | Deliverable | Exit gate | Status |
 |---|---|---|---|
@@ -12,7 +12,7 @@ This roadmap reflects the merged Laravel foundation and authenticated catalog. E
 | 5 | Manual sales and persisted FIFO batch allocations | Deterministic FIFO, correct cost, no overselling and audit tests | Merged (PR #9); further financial hardening pending |
 | 6 | Dashboard, low-stock thresholds and CSV import preview/validation | Accurate summaries; no silent partial imports | Dashboard and preview merged (PRs #10–#11); confirmed atomic import merged (PR #13) |
 | 6.5 | Seller UX: product images, inventory search/details, optional SKU for singles | Safe media handling; owner-scoped detail pages; SKU-less singles work with inventory while CSV import stays unambiguous | 6.5A/B/C merged (PRs #15–#17). Scope in [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md) |
-| 6.5D | Workspace and collaboration: membership, invitations, roles, switching and revocation | Owner isolation, explicit role matrix, invite lifecycle, audit actor attribution and authorization tests | D1/D2 merged (PRs #18–#19); D3 catalog edit permissions in development; switching/shared application access pending. See [23-workspace-collaboration-phase.md](23-workspace-collaboration-phase.md) |
+| 6.5D | Workspace and collaboration: membership, invitations, roles, switching and revocation | Owner isolation, explicit role matrix, invite lifecycle, audit actor attribution and authorization tests | D1/D2/D3 merged (PRs #18–#25). D4 regression/security hardening in progress. See [23-workspace-collaboration-phase.md](23-workspace-collaboration-phase.md) |
 | 7 | Release hardening: password recovery, email verification, active sessions, security, backup and deployment | Recovery and verification tests; production checklist and restore rehearsal pass | Planned |
 
 
@@ -20,7 +20,7 @@ User-facing usage and explicit implemented/planned collaboration boundaries are 
 
 ## User management decisions
 
-- **MVP access:** one owner account per workspace. No staff invitations, global administrator UI, branches or subscription roles are implemented yet; workspace collaboration is now scheduled for Phase 6.5D.
+- **MVP access:** one owner account per workspace. Staff invitations and workspace memberships are implemented. Global administrator UI, branches and subscription roles remain out of scope.
 - **Workspace model:** one private workspace per account. Retain the owner relationship for V1; design authorization so future workspace membership is possible without migrating stock ownership to users.
 - **Profile and workspace settings:** deliver simple name, email and password changes and workspace name, currency and timezone settings in Phase 3; require current password and re-verification for sensitive changes.
 - **Security timing:** retain existing login/register throttling; implement password reset, email verification and active-session management before production release in Phase 7. Optional 2FA is a post-MVP enhancement unless risk review changes priority.
@@ -33,4 +33,4 @@ Use integer stock units and decimal-safe costs. Every receipt and adjustment mus
 
 ## Current work
 
-PRs #1–#19 are merged into `main`. Phase 3 stock UI and owner settings are implemented with Blade; Livewire 4 remains pending. Phase 4 has an isolated database-backed sample demo; production-domain parity remains pending. Phase 5 manual sales/FIFO is merged. Phase 6 dashboard and low-stock thresholds merged in PR #10; CSV preview merged in PR #11; shared sidebar merged in PR #12; confirmed import merged in PR #13. Phase 6.5A optional SKU and workspace user guide merged in PR #15. Phase 6.5B images merged in PR #16; 6.5C inventory navigation and 6.5D workspace collaboration are active workstreams before Phase 7.
+PRs #1–#25 are merged into `main`. Phase 3 stock UI and owner settings are implemented with Blade; Livewire 4 remains pending. Phase 4 has an isolated database-backed sample demo; production-domain parity remains pending. Phase 5 manual sales/FIFO is merged. Phase 6 dashboard and low-stock thresholds merged in PR #10; CSV preview merged in PR #11; shared sidebar merged in PR #12; confirmed import merged in PR #13. Phase 6.5A optional SKU and workspace user guide merged in PR #15. Phase 6.5B images merged in PR #16; 6.5C inventory navigation and 6.5D workspace collaboration are active workstreams before Phase 7.

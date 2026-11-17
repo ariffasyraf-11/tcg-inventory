@@ -128,6 +128,7 @@ class WorkspaceInvitationController extends Controller
     {
         $workspace = $this->ownedWorkspace($request);
         abort_unless($invitation->workspace_id === $workspace->id, 404);
+        abort_if($invitation->accepted_at !== null, 422, 'Accepted invitations cannot be revoked. Remove the active member instead.');
         $invitation->update(['revoked_at' => now()]);
 
         return to_route('workspace-invitations.index')->with('status', 'Invitation revoked.');
