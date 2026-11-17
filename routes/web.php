@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/catalog/{product}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
     Route::patch('/catalog/{product}', [CatalogController::class, 'update'])->name('catalog.update');
     Route::patch('/catalog/{product}/sku', [CatalogController::class, 'updateSku'])->name('catalog.sku.update');
+    Route::patch('/catalog/{product}/variant', [CatalogController::class, 'updateVariant'])->name('catalog.variant.update');
     Route::delete('/catalog/{product}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });

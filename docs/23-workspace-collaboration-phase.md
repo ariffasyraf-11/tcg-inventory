@@ -58,3 +58,7 @@ Owner-only `/workspace/members` lists active memberships, allows role changes an
 ## D3 catalog maintenance: SKU changes and product archive
 
 The product edit screen supports audited SKU changes, workspace-level duplicate checks, and SKU-required rules for sealed products and single cards. Historical stock and sales continue to refer to immutable variant IDs. Old SKU values are retained in `product_sku_changes` for traceability. External CSV files are **not** rewritten; users must update old references. The Remove action archives a product by setting `active=false`, rather than deleting records with historical stock or sales. Products can be reactivated via Edit. Both actions enforce selected-workspace authorization and the catalog-edit policy.
+
+## D3 variant attribute editing
+
+Authorized catalog editors can update condition, language, finish and card number for singles, or language and sealed format for sealed products. Product type, variant ID, stock and costs are not edited here. Each changed field creates an actor-attributed before/after record in `product_variant_attribute_changes`. The edit page warns that existing stock and sales still point to the same variant ID and will display the current attributes; historical attribute values are preserved in the audit table. Variant merging and permanent deletion are out of scope.
