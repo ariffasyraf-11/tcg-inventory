@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PersistentDemoController;
+use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/inventory/receive', [InventoryController::class, 'receive'])->name('inventory.receive');
     Route::post('/inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+    Route::get('/catalog/{product}/image', [ProductImageController::class, 'show'])->name('catalog.image.show');
+    Route::post('/catalog/{product}/image', [ProductImageController::class, 'store'])->name('catalog.image.store');
+    Route::delete('/catalog/{product}/image', [ProductImageController::class, 'destroy'])->name('catalog.image.destroy');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
 });
 
