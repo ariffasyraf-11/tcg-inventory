@@ -44,11 +44,11 @@ Open **CSV Preview** and upload a CSV with the exact header `sku,quantity,unit_c
 
 **Phase 6.5B (in development):** the Catalog table supports uploading, replacing and removing one primary image per product (JPEG, PNG, WebP or GIF; maximum 3 MB). Images are private to the owner workspace and displayed as thumbnails; missing images use a placeholder. These controls become available only after the image PR is merged.
 
-**Phase 6.5C (not implemented):** product/variant detail pages, inventory search/filter and movement-history navigation remain planned.
+**Phase 6.5C (in development):** product/variant detail pages, inventory search/filter and movement-history navigation remain planned.
 
-## 7. Post-MVP collaboration (not implemented)
+## 7. Workspace and collaboration — Phase 6.5D (active planning; not implemented)
 
-**Status: planned only.** No invitation, shared-workspace membership, staff role or permissions UI is currently implemented. Do not share the owner password as a workaround.
+**Status: active working phase, not yet implemented.** No invitation, shared-workspace membership, staff role or permissions UI is currently implemented. Do not share the owner password as a workaround.
 
 Proposed future workflow, subject to product approval:
 1. An owner invites a colleague by email to a specific workspace.
@@ -57,7 +57,7 @@ Proposed future workflow, subject to product approval:
 4. Every inventory action records the actual actor, and authorization checks both membership and role.
 5. The owner can revoke access; revocation must take effect for subsequent requests without deleting audit history.
 
-**Architecture work needed before implementation:** a workspace-membership join table, invitation lifecycle, role/permission policy, ownership-transfer safeguards, cross-workspace access checks, revocation behavior, and tests for concurrent users and account separation. These are proposals, not existing routes or tables. V1 remains owner-only.
+**Architecture work needed before implementation:** a workspace-membership join table, invitation lifecycle, role/permission policy, ownership-transfer safeguards, cross-workspace access checks, revocation behavior, and tests for concurrent users and account separation. These are proposals, not existing routes or tables. Current access remains owner-only. See [23-workspace-collaboration-phase.md](23-workspace-collaboration-phase.md).
 
 ## 8. Roadmap and release caveats
 

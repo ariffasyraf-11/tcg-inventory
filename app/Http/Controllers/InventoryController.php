@@ -17,11 +17,17 @@ class InventoryController extends Controller
     {
         $workspace = $this->workspace($request);
 
+        $search = trim((string) $request->query('q', ''));
+
         $items = InventoryItem::query()
             ->where('workspace_id', $workspace->id)
             ->with(['variant.product', 'batches'])
+            ->when($search !== '', fn ($query) => $query->whereHas('variant', fn ($variant) => $variant
+                ->where('sku', 'like', '%'.$search.'%')
+                ->orWhereHas('product', fn ($product) => $product->where('name', 'like', '%'.$search.'%'))))
             ->orderBy('id')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         $variants = ProductVariant::query()
             ->whereHas('product', fn ($query) => $query->where('workspace_id', $workspace->id))
@@ -36,7 +42,18 @@ class InventoryController extends Controller
             ->limit(30)
             ->get();
 
-        return view('inventory.index', compact('workspace', 'items', 'variants', 'movements'));
+        return view('inventory.index', compact('workspace', 'items', 'variants', 'movements', 'search'));
+    }
+
+    public function show(Request $request, InventoryItem $item): View
+    {
+        $workspace = $this->workspace($request);
+        abort_unless($item->workspace_id === $workspace->id, 404);
+
+        $item->load(['variant.product', 'batches']);
+        $movements = $item->movements()->latest('id')->paginate(30);
+
+        return view('inventory.show', compact('workspace', 'item', 'movements'));
     }
 
     public function receive(Request $request, StockOperations $operations): RedirectResponse

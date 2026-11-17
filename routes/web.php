@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('/settings/workspace', [SettingsController::class, 'workspaceName'])->name('settings.workspace');
     Route::patch('/settings/single-sku', [SettingsController::class, 'singleSku'])->name('settings.single-sku');
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/{item}', [InventoryController::class, 'show'])->name('inventory.show');
     Route::post('/inventory/receive', [InventoryController::class, 'receive'])->name('inventory.receive');
     Route::post('/inventory/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
