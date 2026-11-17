@@ -81,6 +81,10 @@ class CsvPreviewController extends Controller
         $workspace = DB::table('workspaces')->where('owner_user_id', $request->user()->id)->where('is_demo', false)->first();
         $token = null;
 
+        if (! $workspace && $rows !== [] && $issues === []) {
+            $issues[] = 'No active owner workspace is available.';
+        }
+
         if ($workspace && $rows !== [] && $issues === []) {
             $skus = array_column($rows, 'sku');
             $matches = DB::table('product_variants')

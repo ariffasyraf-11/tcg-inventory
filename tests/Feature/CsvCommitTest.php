@@ -46,6 +46,7 @@ class CsvCommitTest extends TestCase
         $owner = User::factory()->create();
         $other = User::factory()->create();
         $this->variant($other, 'OTHER-1');
+        Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Owner shop']);
 
         $this->actingAs($owner)->post('/imports/preview', [
             'csv' => UploadedFile::fake()->createWithContent('stock.csv', "sku,quantity,unit_cost\nOTHER-1,2,3.50\n"),
