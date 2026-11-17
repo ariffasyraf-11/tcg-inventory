@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class InventoryOperationsTest extends TestCase
@@ -61,7 +62,7 @@ class InventoryOperationsTest extends TestCase
         $other = User::factory()->create();
         Workspace::create(['owner_user_id' => $other->id, 'name' => 'Other']);
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        $this->expectException(HttpException::class);
         app(StockOperations::class)->receive($other, $variant, 1, '1.00');
     }
 
