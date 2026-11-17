@@ -11,7 +11,7 @@ This roadmap reflects the merged Laravel foundation and authenticated catalog. E
 | 4 | Isolated database-backed demo workspace and guided stock journey | Demo cannot access or mutate real owner data; reset is authorized | In progress: isolated DB sample demo; domain parity pending |
 | 5 | Manual sales and persisted FIFO batch allocations | Deterministic FIFO, correct cost, no overselling and audit tests | Merged (PR #9); further financial hardening pending |
 | 6 | Dashboard, low-stock thresholds and CSV import preview/validation | Accurate summaries; no silent partial imports | Dashboard and preview merged (PRs #10–#11); confirmed atomic import merged (PR #13) |
-| 6.5 | Seller UX: product images, inventory search/details, optional SKU for singles | Safe media handling; owner-scoped detail pages; SKU-less singles work with inventory while CSV import stays unambiguous | Planned; scope in [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md) |
+| 6.5 | Seller UX: product images, inventory search/details, optional SKU for singles | Safe media handling; owner-scoped detail pages; SKU-less singles work with inventory while CSV import stays unambiguous | 6.5A merged (PR #15); 6.5B images in development; 6.5C planned. Scope in [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md) |
 | 7 | Release hardening: password recovery, email verification, active sessions, security, backup and deployment | Recovery and verification tests; production checklist and restore rehearsal pass | Planned |
 | Post-MVP | Optional invitations, workspace membership and limited roles | Explicit product decision and permission matrix before development | Deferred |
 
@@ -32,4 +32,4 @@ Use integer stock units and decimal-safe costs. Every receipt and adjustment mus
 
 ## Current work
 
-PRs #1–#13 are merged into `main`. Phase 3 stock UI and owner settings are implemented with Blade; Livewire 4 remains pending. Phase 4 has an isolated database-backed sample demo; production-domain parity remains pending. Phase 5 manual sales/FIFO is merged. Phase 6 dashboard and low-stock thresholds merged in PR #10; CSV preview merged in PR #11; shared sidebar merged in PR #12; confirmed import merged in PR #13. Phase 6.5 is next, ahead of Phase 7.
+PRs #1–#15 are merged into `main`. Phase 3 stock UI and owner settings are implemented with Blade; Livewire 4 remains pending. Phase 4 has an isolated database-backed sample demo; production-domain parity remains pending. Phase 5 manual sales/FIFO is merged. Phase 6 dashboard and low-stock thresholds merged in PR #10; CSV preview merged in PR #11; shared sidebar merged in PR #12; confirmed import merged in PR #13. Phase 6.5A optional SKU and workspace user guide merged in PR #15. Phase 6.5B image support is in development; 6.5C inventory navigation remains before Phase 7.

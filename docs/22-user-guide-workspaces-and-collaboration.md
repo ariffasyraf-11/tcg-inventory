@@ -30,7 +30,7 @@ See [10-test-accounts.md](10-test-accounts.md) for independent test identities a
 
 Open **Catalog** to create a single card or sealed product. Record the product name, type and relevant variant attributes (condition, language, finish, card number or sealed format). Explicit SKUs must be unique within the workspace.
 
-**Phase 6.5A (pending merge):** under Settings, an owner can choose whether new single cards require an SKU. Default is enabled. Disabling it permits SKU-less singles, without changing existing SKUs. Sealed products still require an SKU. SKU-less singles are identified internally by variant ID and remain eligible for normal stock operations. The existing CSV import cannot target them.
+**Phase 6.5A (implemented):** under Settings, an owner can choose whether new single cards require an SKU. Default is enabled. Disabling it permits SKU-less singles, without changing existing SKUs. Sealed products still require an SKU. SKU-less singles are identified internally by variant ID and remain eligible for normal stock operations. The existing CSV import cannot target them.
 
 ## 4. Inventory and sales (implemented)
 
@@ -40,9 +40,11 @@ Open **Inventory** to select a product variant, receive a positive quantity with
 
 Open **CSV Preview** and upload a CSV with the exact header `sku,quantity,unit_cost`. Up to 500 rows and a 1 MB file are accepted. Every SKU must resolve uniquely within the owner's catalog. Review validation issues before confirming. **Confirm stock import** writes all valid receipts in one transaction; a failure rolls back the batch. CSV does not create new catalog products and does not support SKU-less variants.
 
-## 6. Product images and enhanced inventory navigation (planned, not implemented)
+## 6. Product images and enhanced inventory navigation
 
-Phase 6.5B proposes product image upload, replacement and thumbnail display. Phase 6.5C proposes product/variant details, search, filtering and movement-history navigation. Do not expect these controls in the current UI.
+**Phase 6.5B (in development):** the Catalog table supports uploading, replacing and removing one primary image per product (JPEG, PNG, WebP or GIF; maximum 3 MB). Images are private to the owner workspace and displayed as thumbnails; missing images use a placeholder. These controls become available only after the image PR is merged.
+
+**Phase 6.5C (not implemented):** product/variant detail pages, inventory search/filter and movement-history navigation remain planned.
 
 ## 7. Post-MVP collaboration (not implemented)
 
@@ -59,4 +61,4 @@ Proposed future workflow, subject to product approval:
 
 ## 8. Roadmap and release caveats
 
-Phase 6.5A is pending PR validation; image and inventory UX slices are planned. Phase 7 must cover account recovery, verification, session management, security and backup/deployment before production readiness is claimed. See [05-roadmap.md](05-roadmap.md) and [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md).
+Phase 6.5A is merged; image and inventory UX slices remain in progress/planned. Phase 7 must cover account recovery, verification, session management, security and backup/deployment before production readiness is claimed. See [05-roadmap.md](05-roadmap.md) and [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md).
