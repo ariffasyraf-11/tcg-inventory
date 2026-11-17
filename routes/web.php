@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PersistentDemoController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
+    Route::post('/sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
     Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
     Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
