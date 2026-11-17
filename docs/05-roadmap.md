@@ -9,7 +9,7 @@ This roadmap reflects the merged Laravel foundation and authenticated catalog. E
 | 2 | Inventory items, receipt batches, immutable movement ledger, receiving and adjustments | Atomicity, authorization, no-negative-stock, batch reconciliation and rollback tests | Backend merged (PR #4); hardening pending |
 | 3 | Livewire 4 integration, stock management screens, basic profile and workspace settings | Livewire dependency locked; authenticated UX and settings tests pass | In progress: Blade stock UI merged (PR #6); owner settings in PR #7; Livewire pending |
 | 4 | Isolated database-backed demo workspace and guided stock journey | Demo cannot access or mutate real owner data; reset is authorized | In progress: isolated DB sample demo; domain parity pending |
-| 5 | Manual sales and persisted FIFO batch allocations | Deterministic FIFO, correct cost, no overselling and audit tests | Planned |
+| 5 | Manual sales and persisted FIFO batch allocations | Deterministic FIFO, correct cost, no overselling and audit tests | In progress: Phase 5 PR, CI pending |
 | 6 | Dashboard, low-stock thresholds and CSV import preview/validation | Accurate summaries; no silent partial imports | Planned |
 | 7 | Release hardening: password recovery, email verification, active sessions, security, backup and deployment | Recovery and verification tests; production checklist and restore rehearsal pass | Planned |
 | Post-MVP | Optional invitations, workspace membership and limited roles | Explicit product decision and permission matrix before development | Deferred |
@@ -29,4 +29,4 @@ Use integer stock units and decimal-safe costs. Every receipt and adjustment mus
 
 ## Current work
 
-PRs #1–#5 are merged into `main`. Inventory persistence and an internal stock service are present. The Phase 3 stock UI was merged in PR #6 using Blade. Owner settings are being implemented separately; Livewire 4 remains pending. The `/demo` route is still a local-only session prototype. Phases 4–6 are not yet implemented.
+PRs #1–#8 are merged into `main`. Phase 3 stock UI and owner settings are implemented with Blade; Livewire 4 and some preferences remain pending. Phase 4 has an isolated database-backed sample demo, but production-domain parity is pending. Phase 5 manual sales/FIFO work is in a dedicated PR. Phase 6 is planned.
