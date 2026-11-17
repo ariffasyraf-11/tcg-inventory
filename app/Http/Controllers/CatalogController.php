@@ -20,17 +20,21 @@ class CatalogController extends Controller
         $workspace = $this->workspace($request);
 
         $status = $request->query('status', 'active');
+        $type = $request->query('type', 'single');
+        abort_unless(in_array($type, ['single', 'sealed'], true), 404);
         abort_unless(in_array($status, ['active', 'archived', 'all'], true), 404);
 
         return view('catalog.index', [
             'products' => Product::query()
                 ->where('workspace_id', $workspace->id)
+                ->where('type', $type)
                 ->when($status === 'active', fn ($query) => $query->where('active', true))
                 ->when($status === 'archived', fn ($query) => $query->where('active', false))
                 ->with('variants')
                 ->latest()
                 ->paginate(20)->withQueryString(),
             'status' => $status,
+            'type' => $type,
             'workspace' => $workspace,
         ]);
     }
