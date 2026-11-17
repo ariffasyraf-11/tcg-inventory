@@ -24,9 +24,9 @@
         </div>
     @endif
     @if(app(\App\Support\WorkspaceAccess::class)->allows(auth()->user(), $workspace, 'catalog'))
-    <section class="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 class="mb-4 text-xl font-semibold">Add a product</h2>
-        <form id="catalog-create-form" action="{{ route('catalog.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
+    <details id="catalog-create-panel" class="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm" @if($errors->any() || old('name') !== null) open @endif>
+        <summary class="cursor-pointer text-xl font-semibold text-indigo-700">Add a product <span class="ml-2 text-sm font-normal text-slate-500">Expand to register a new product</span></summary>
+        <form id="catalog-create-form" action="{{ route('catalog.store') }}" method="POST" class="mt-5 grid gap-4 md:grid-cols-2">
             @csrf
             <label class="text-sm font-medium">Product name
                 <input name="name" value="{{ old('name') }}" required maxlength="255" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
@@ -37,9 +37,9 @@
                     <option value="sealed" @selected(old('type') === 'sealed')>Sealed product</option>
                 </select>
             </label>
-            <label class="text-sm font-medium">SKU <span class="text-slate-500">(optional for singles when enabled in workspace settings)</span>
-                <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" @if($workspace->single_sku_enabled) required @endif class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
-                <span class="mt-1 block text-xs text-slate-500">Sealed products always require SKU. Singles without SKU cannot use SKU-based CSV imports.</span>
+            <label class="text-sm font-medium">SKU <span class="text-slate-500">(sealed products only)</span>
+                <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
+                <span class="mt-1 block text-xs text-slate-500">SKU is disabled for singles. Sealed products require SKU.</span>
             </label>
             <label class="text-sm font-medium">Condition (singles)
                 <input data-single-field name="condition" list="catalog-condition-suggestions" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
@@ -62,7 +62,7 @@
             <datalist id="catalog-sealed-format-suggestions"><option value="Booster Pack"></option><option value="Booster Box"></option><option value="Elite Trainer Box"></option><option value="Starter Deck"></option><option value="Structure Deck"></option><option value="Theme Deck"></option><option value="Collection Box"></option><option value="Tin"></option><option value="Bundle"></option></datalist>
             <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 md:col-span-2">Add product</button>
         </form>
-    </section>
+    </details>
     @endif
     <nav aria-label="Product categories" class="mb-4 flex gap-2 border-b border-slate-200" role="tablist">
         <a role="tab" aria-selected="{{ $type === 'single' ? 'true' : 'false' }}" href="{{ route('catalog.index', ['type' => 'single', 'status' => $status]) }}" class="rounded-t-lg px-5 py-3 text-sm font-semibold {{ $type === 'single' ? 'border-b-2 border-indigo-600 bg-white text-indigo-700' : 'text-slate-600 hover:bg-slate-100' }}">Singles &amp; Used</a>
@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!form) return;
     const type = document.getElementById('catalog-product-type');
     const sku = document.getElementById('catalog-sku');
-    const singleSkuRequired = @json((bool) $workspace->single_sku_enabled);
     function syncTypeFields() {
         const sealed = type.value === 'sealed';
         form.querySelectorAll('[data-single-field]').forEach(input => {
@@ -107,7 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
             input.disabled = !sealed;
             input.closest('label').classList.toggle('opacity-50', !sealed);
         });
-        sku.required = sealed || singleSkuRequired;
+        sku.disabled = !sealed;
+        sku.required = sealed;
+        sku.closest('label').classList.toggle('opacity-50', !sealed);
     }
     type.addEventListener('change', syncTypeFields);
     syncTypeFields();
