@@ -23,6 +23,7 @@
             <ul class="list-inside list-disc">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
         </div>
     @endif
+    @if(app(\App\Support\WorkspaceAccess::class)->allows(auth()->user(), $workspace, 'catalog'))
     <section class="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 class="mb-4 text-xl font-semibold">Add a product</h2>
         <form action="{{ route('catalog.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
@@ -58,6 +59,7 @@
             <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 md:col-span-2">Add product</button>
         </form>
     </section>
+    @endif
     <section class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
         <h2 class="p-5 text-xl font-semibold">Your products</h2>
         <table class="w-full min-w-[600px] text-left text-sm">
@@ -66,7 +68,8 @@
                 @forelse ($products as $product)
                     @foreach ($product->variants as $variant)
                         <tr>
-                            <td class="p-4"><div class="flex flex-col gap-2">@if($product->image_path)<img src="{{ route('catalog.image.show', $product) }}" alt="{{ $product->name }} image" loading="lazy" class="h-20 w-20 rounded-lg border object-cover">@else<div class="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-500">No image</div>@endif<form action="{{ route('catalog.image.store', $product) }}" method="POST" enctype="multipart/form-data" class="space-y-1">@csrf<label class="block text-xs">Image<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required class="block w-40 text-xs"></label><button class="rounded bg-slate-800 px-2 py-1 text-xs text-white">Upload</button></form>@if($product->image_path)<form action="{{ route('catalog.image.destroy', $product) }}" method="POST">@csrf @method('DELETE')<button class="text-xs text-red-700 underline">Remove image</button></form>@endif</div></td><td class="p-4 font-semibold">{{ $product->name }} <a class="ml-2 text-xs font-normal text-indigo-700 underline" href="{{ route('catalog.edit', $product) }}">Edit</a></td>
+                            <td class="p-4"><div class="flex flex-col gap-2">@if($product->image_path)<img src="{{ route('catalog.image.show', $product) }}" alt="{{ $product->name }} image" loading="lazy" class="h-20 w-20 rounded-lg border object-cover">@else<div class="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-500">No image</div>@endif
+@if($workspace->owner_user_id === auth()->id())<form action="{{ route('catalog.image.store', $product) }}" method="POST" enctype="multipart/form-data" class="space-y-1">@csrf<label class="block text-xs">Image<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required class="block w-40 text-xs"></label><button class="rounded bg-slate-800 px-2 py-1 text-xs text-white">Upload</button></form>@if($product->image_path)<form action="{{ route('catalog.image.destroy', $product) }}" method="POST">@csrf @method('DELETE')<button class="text-xs text-red-700 underline">Remove image</button></form>@endif @endif</div></td><td class="p-4 font-semibold">{{ $product->name }} @if(app(\App\Support\WorkspaceAccess::class)->allows(auth()->user(), $workspace, 'catalog_edit'))<a class="ml-2 text-xs font-normal text-indigo-700 underline" href="{{ route('catalog.edit', $product) }}">Edit</a>@endif</td>
                             <td class="p-4">{{ ucfirst($product->type) }}</td>
                             <td class="p-4">{{ $variant->sku ?: 'No SKU' }}</td>
                             <td class="p-4">{{ collect([$variant->condition, $variant->language, $variant->finish, $variant->card_number, $variant->sealed_format])->filter()->join(' · ') ?: 'Standard' }}</td>

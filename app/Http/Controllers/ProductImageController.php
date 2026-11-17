@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Support\WorkspaceAccess;
+use App\Support\WorkspaceContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +15,9 @@ class ProductImageController extends Controller
 {
     public function show(Request $request, Product $product): BinaryFileResponse
     {
-        $this->authorizeOwner($request, $product);
+        $workspace = app(WorkspaceContext::class)->current($request);
+        abort_unless($product->workspace_id === $workspace->id, 404);
+        abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'view'), 404);
 
         abort_unless($product->image_path && Storage::disk('local')->exists($product->image_path), 404);
 
