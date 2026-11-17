@@ -22,6 +22,11 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function workspace(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Workspace::class, 'owner_user_id');
+    }
+
     protected function casts(): array
     {
         return [
