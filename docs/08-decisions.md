@@ -11,3 +11,9 @@
 2026-11-17 — Track receipt cost by batches, stock with immutable ledger, sales with persisted FIFO allocations.
 
 2026-11-17 — Keep standard Laravel project files for easy clean install; custom modules must be portable to existing clean Laravel projects.
+
+2026-11-17 — User management roadmap review: keep owner-only access and one private workspace per account for MVP; defer staff roles, invitations and multi-workspace switching.
+
+2026-11-17 — Deliver profile/workspace settings with Livewire stock UI in Phase 3; retain login throttling now, and require password reset, email verification and session controls before production release in Phase 7.
+
+2026-11-17 — Document illustrative local test accounts only; no shared credentials or pre-provisioned test users. Stock actions must enforce workspace authorization and preserve actor attribution.
