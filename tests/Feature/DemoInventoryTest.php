@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Tests\TestCase;
 
 class DemoInventoryTest extends TestCase
@@ -58,6 +59,7 @@ class DemoInventoryTest extends TestCase
 
     public function test_demo_routes_are_not_available_in_production(): void
     {
+        $this->withoutMiddleware(ValidateCsrfToken::class);
         app()->detectEnvironment(fn () => 'production');
 
         try {
