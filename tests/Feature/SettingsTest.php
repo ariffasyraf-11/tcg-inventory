@@ -45,6 +45,21 @@ class SettingsTest extends TestCase
         $this->assertTrue(Hash::check('NewStrongPass123!', $user->fresh()->password));
     }
 
+    public function test_sku_preference_is_private_and_demo_is_read_only(): void
+    {
+        $owner = User::factory()->create();
+        $other = User::factory()->create();
+        Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Owner']);
+
+        $this->actingAs($other)->patch('/settings/single-sku', ['single_sku_enabled' => 0])
+            ->assertRedirect('/settings');
+        $this->assertTrue(Workspace::where('owner_user_id', $owner->id)->first()->single_sku_enabled);
+
+        $demo = User::factory()->create();
+        Workspace::create(['owner_user_id' => $demo->id, 'name' => 'Demo', 'is_demo' => true]);
+        $this->actingAs($demo)->patch('/settings/single-sku', ['single_sku_enabled' => 0])->assertForbidden();
+    }
+
     public function test_owner_cannot_change_another_owners_workspace(): void
     {
         $owner = User::factory()->create();

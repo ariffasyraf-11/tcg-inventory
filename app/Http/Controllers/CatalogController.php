@@ -34,7 +34,7 @@ class CatalogController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', Rule::in(['single', 'sealed'])],
-            'sku' => ['required', 'string', 'max:100'],
+            'sku' => [$workspace->single_sku_enabled || $request->input('type') === 'sealed' ? 'required' : 'nullable', 'string', 'max:100'],
             'condition' => ['nullable', 'string', 'max:40'],
             'language' => ['nullable', 'string', 'max:40'],
             'finish' => ['nullable', 'string', 'max:40'],
@@ -50,16 +50,18 @@ class CatalogController extends Controller
             return back()->withErrors(['type' => 'Card-specific attributes are only for singles.'])->withInput();
         }
 
-        $skuExists = Product::query()
+        $sku = trim((string) ($data['sku'] ?? ''));
+
+        $skuExists = $sku !== '' && Product::query()
             ->where('workspace_id', $workspace->id)
-            ->whereHas('variants', fn ($query) => $query->where('sku', $data['sku']))
+            ->whereHas('variants', fn ($query) => $query->where('sku', $sku))
             ->exists();
 
         if ($skuExists) {
             return back()->withErrors(['sku' => 'SKU is already in use in your workspace.'])->withInput();
         }
 
-        DB::transaction(function () use ($workspace, $data): void {
+        DB::transaction(function () use ($workspace, $data, $sku): void {
             $product = $workspace->products()->create([
                 'name' => $data['name'],
                 'type' => $data['type'],
@@ -67,7 +69,7 @@ class CatalogController extends Controller
             ]);
 
             $product->variants()->create([
-                'sku' => $data['sku'],
+                'sku' => $sku !== '' ? $sku : null,
                 'condition' => $data['type'] === 'single' ? ($data['condition'] ?? null) : null,
                 'language' => $data['language'] ?? null,
                 'finish' => $data['type'] === 'single' ? ($data['finish'] ?? null) : null,

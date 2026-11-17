@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Workspace extends Model
 {
-    protected $fillable = ['owner_user_id', 'name', 'is_demo'];
+    protected $fillable = ['owner_user_id', 'name', 'is_demo', 'single_sku_enabled'];
 
     protected function casts(): array
     {
-        return ['is_demo' => 'boolean'];
+        return ['is_demo' => 'boolean', 'single_sku_enabled' => 'boolean'];
     }
 
     public function owner(): BelongsTo
