@@ -1,67 +1,47 @@
 # User guide — TCG Inventory
 
-> **Implementation status:** this guide distinguishes working MVP features from future proposals. Post-MVP collaboration is **not implemented**. Do not assume that invitations, staff access, shared ownership or roles exist.
+> **Implementation status (Phase 6.5D4):** Workspace invitations, accepted memberships, switching, shared catalog browsing, shared stock receiving and adjustments, member role changes and removal are implemented. Dashboard, sales, CSV imports and settings are still owner-scoped. Phase 7 is not started.
 
-## 1. Accounts and sign-in (implemented)
+## 1. Accounts and authentication
 
-- Visit `/register` to create a seller account, then `/login` to sign in.
-- The authenticated workspace sidebar provides Dashboard, Catalog, Inventory, Sales, CSV Preview, Demo and Settings.
-- Use **Log out** in the shared navigation to end the session.
-- Password change is available under Settings with current-password verification. Password reset, email verification and active-session management are planned for Phase 7, not currently available.
+Register at `/register` and sign in at `/login`. Use Settings for profile and password changes. Password recovery, email verification and active-session management remain Phase 7 work.
 
-## 2. Workspaces (implemented: one owner, one private workspace)
+## 2. Workspace collaboration
 
-A **workspace** is the seller's private container for catalog products, variants, inventory items, receipt batches, stock movements and sales. It is linked to exactly one owner account. On first access, the application creates the owner's workspace automatically if it does not exist. The workspace name is editable in Settings.
+Every account owns a private workspace. Owners can invite users at **Invite staff** (`/workspace/invitations`) by entering an email and selecting Manager, Inventory Operator or Viewer. The system displays a one-time link for the owner to share manually; automated email delivery is not implemented. The invited user signs in with the matching email and accepts from **My invitations** (`/workspace/invitations/inbox`) or the token link.
 
-**Current permission model:** the signed-in owner may view and modify only their own workspace's real inventory. A second account has a different private workspace, even if it creates the same SKU. There is no workspace switcher, organization directory, invitation acceptance, membership management or role assignment. A demo workspace is intentionally isolated and read-only where applicable; the local session demo is separate from seller data.
+After acceptance, use **Switch workspace** to select the shared workspace. The Catalog and Inventory pages then use that selection. The selected workspace name is shown in the navigation header. If membership is removed, the next request clears that selection and falls back to the user's own workspace.
 
-| Capability | Current MVP owner | Other account | Post-MVP collaborator |
-|---|---|---|---|
-| View owner's catalog and stock | Yes | No | Not implemented |
-| Receive/adjust stock | Yes | No | Not implemented |
-| Record sales | Yes | No | Not implemented |
-| Change workspace settings | Yes | No | Not implemented |
-| Invite users or manage roles | No | No | Not implemented |
-| Switch between shared workspaces | No | No | Not implemented |
+Owners manage accepted members under **Members & roles** (`/workspace/members`), where they can change roles or remove members. Removing membership does not delete historical stock movements. Invitation history and active membership management are separate.
 
-See [10-test-accounts.md](10-test-accounts.md) for independent test identities and isolation checks.
+| Capability | Owner | Manager | Inventory Operator | Viewer |
+|---|---|---|---|---|
+| Browse catalog and inventory history | Yes | Yes | Yes | Yes |
+| Receive and adjust stock | Yes | Yes | Yes | No |
+| Create catalog products | Yes | Yes | No | No |
+| Edit product information / SKU / archive | Yes | By workspace policy | By workspace policy | No |
+| Manage members, invitations and SKU requirement | Yes | No | No | No |
+| Sales, dashboard, CSV import | Owner-scoped only | Not shared | Not shared | Not shared |
 
-## 3. Catalog and single-card SKUs
+The `catalog_edit_role` workspace setting permits owner-only, owner+manager, or owner+manager+inventory operator editing. It does not grant Viewer write access.
 
-Open **Catalog** to create a single card or sealed product. Record the product name, type and relevant variant attributes (condition, language, finish, card number or sealed format). Explicit SKUs must be unique within the workspace.
+## 3. Catalog, SKU and product archive
 
-**Phase 6.5A (implemented):** under Settings, an owner can choose whether new single cards require an SKU. Default is enabled. Disabling it permits SKU-less singles, without changing existing SKUs. Sealed products still require an SKU. SKU-less singles are identified internally by variant ID and remain eligible for normal stock operations. The existing CSV import cannot target them.
+Catalog supports singles and sealed products. SKU uniqueness is checked within the workspace. The owner manages whether singles require an SKU at **SKU permissions** (`/settings/sku-permissions`); sealed products always require one.
 
-## 4. Inventory and sales (implemented)
+Authorized editors can change product name, active status, variant SKU and variant attributes. Attribute changes have per-field actor-attributed audit records. SKU changes are recorded with actor, previous and new value. Existing stock and sales use stable variant IDs, but previously exported CSV files are not automatically rewritten. Use **Archive product** on the edit page to remove it from the active catalog without deleting stock and sales history. The Catalog filter provides Active, Archived and All views. Reactivate by editing visibility.
 
-Open **Inventory** to select a product variant, receive a positive quantity with unit cost, or adjust stock out with a reason. On-hand quantities reconcile against receipt batches. The system records an audit movement for each receipt or adjustment. Open **Sales** to record a manual sale, quantity and unit price; FIFO batch allocation determines cost. These are owner-scoped operations; the system prevents overselling.
+## 4. Inventory and sales
 
-## 5. CSV stock receipts (implemented, Phase 6C)
+Select a variant in Inventory to receive stock or record a stock adjustment. Managers and Inventory Operators can perform these operations in an accepted shared workspace. The ledger preserves the acting user. Viewers cannot mutate stock. Sales remains owner-scoped and is not automatically switched to a selected shared workspace.
 
-Open **CSV Preview** and upload a CSV with the exact header `sku,quantity,unit_cost`. Up to 500 rows and a 1 MB file are accepted. Every SKU must resolve uniquely within the owner's catalog. Review validation issues before confirming. **Confirm stock import** writes all valid receipts in one transaction; a failure rolls back the batch. CSV does not create new catalog products and does not support SKU-less variants.
+## 5. CSV imports and media
 
-## 6. Product images and enhanced inventory navigation
+CSV Preview accepts `sku,quantity,unit_cost` for owner-scoped imports; it does not support SKU-less variants. Product images can be uploaded and removed by the workspace owner. Members can view authorized catalog images.
 
-**Phase 6.5B (in development):** the Catalog table supports uploading, replacing and removing one primary image per product (JPEG, PNG, WebP or GIF; maximum 3 MB). Images are private to the owner workspace and displayed as thumbnails; missing images use a placeholder. These controls become available only after the image PR is merged.
+## 6. Limitations and release readiness
 
-**Phase 6.5C (in development):** product/variant detail pages, inventory search/filter and movement-history navigation remain planned.
-
-## 7. Workspace and collaboration — Phase 6.5D (active planning; not implemented)
-
-**Status: active working phase, not yet implemented.** No invitation, shared-workspace membership, staff role or permissions UI is currently implemented. Do not share the owner password as a workaround.
-
-Proposed future workflow, subject to product approval:
-1. An owner invites a colleague by email to a specific workspace.
-2. The colleague accepts with their own account; membership is scoped to that workspace.
-3. An owner assigns a limited role (for example Viewer, Inventory Operator or Manager) according to an explicit permission matrix.
-4. Every inventory action records the actual actor, and authorization checks both membership and role.
-5. The owner can revoke access; revocation must take effect for subsequent requests without deleting audit history.
-
-**Architecture work needed before implementation:** a workspace-membership join table, invitation lifecycle, role/permission policy, ownership-transfer safeguards, cross-workspace access checks, revocation behavior, and tests for concurrent users and account separation. These are proposals, not existing routes or tables. Current access remains owner-only. See [23-workspace-collaboration-phase.md](23-workspace-collaboration-phase.md).
-
-## 8. Roadmap and release caveats
-
-Phase 6.5A is merged; image and inventory UX slices remain in progress/planned. Phase 7 must cover account recovery, verification, session management, security and backup/deployment before production readiness is claimed. See [05-roadmap.md](05-roadmap.md) and [21-phase-6-5-ux-and-optional-sku.md](21-phase-6-5-ux-and-optional-sku.md).
+Dashboard, sales, CSV imports, demo controls and settings retain their owner-scoped behavior; do not assume they operate on a selected shared workspace. The sidebar hides owner-scoped entries while a shared workspace is selected, but authorization is enforced in server controllers. No public sharing, branches, billing or ownership transfer is implemented. Phase 7 security/recovery/deployment work remains separate and not started.
 
 ## Catalog input suggestions
 

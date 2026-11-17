@@ -6,6 +6,10 @@
             <a href="{{ route('dashboard.index') }}" class="text-lg font-bold tracking-tight text-white">TCG Inventory</a>
             <span class="rounded bg-indigo-500/20 px-2 py-1 text-xs text-indigo-200">Seller</span>
         </div>
+        @php
+            $selectedWorkspace = app(\App\Support\WorkspaceContext::class)->current(request());
+            $workspaceOwner = $selectedWorkspace->owner_user_id === auth()->id();
+        @endphp
         <nav aria-label="Workspace navigation" class="flex gap-1 overflow-x-auto px-3 pb-4 text-sm lg:block lg:space-y-1 lg:overflow-visible">
             @foreach ([
                 ['dashboard.index', 'Dashboard', 'dashboard.*'],
@@ -21,6 +25,7 @@
                 ['settings.sku-permissions', 'SKU permissions', 'settings.sku-permissions*'],
                 ['settings.index', 'Settings', 'settings.index'],
             ] as [$route, $label, $pattern])
+                @continue(! $workspaceOwner && in_array($route, ['dashboard.index', 'sales.index', 'imports.index', 'demo.persistent', 'workspace-invitations.index', 'workspace-members.index', 'settings.sku-permissions', 'settings.index'], true))
                 <a href="{{ route($route) }}" @if(request()->routeIs($pattern)) aria-current="page" @endif
                     class="block shrink-0 rounded-lg px-3 py-2.5 font-medium transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 {{ request()->routeIs($pattern) ? 'bg-indigo-600 text-white' : 'text-slate-300' }}">{{ $label }}</a>
             @endforeach
@@ -36,7 +41,7 @@
     </aside>
     <div class="min-w-0 flex-1">
         <div class="border-b border-slate-200 bg-white px-5 py-4 sm:px-8">
-            <p class="text-xs font-semibold uppercase tracking-widest text-indigo-700">Seller workspace</p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-indigo-700">Selected workspace: {{ $selectedWorkspace->name }} @unless($workspaceOwner)(shared)@endunless</p>
             <h1 class="text-xl font-bold">{{ $title }}</h1>
         </div>
         <main id="main-content" class="mx-auto w-full max-w-7xl space-y-6 px-5 py-8 sm:px-8">

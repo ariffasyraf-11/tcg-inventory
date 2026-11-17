@@ -32,7 +32,7 @@ class InventoryController extends Controller
             ->withQueryString();
 
         $variants = ProductVariant::query()
-            ->whereHas('product', fn ($query) => $query->where('workspace_id', $workspace->id))
+            ->whereHas('product', fn ($query) => $query->where('workspace_id', $workspace->id)->where('active', true))
             ->with('product')
             ->orderBy('id')
             ->get();
