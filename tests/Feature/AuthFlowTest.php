@@ -23,6 +23,18 @@ class AuthFlowTest extends TestCase
         $this->get('/catalog')->assertOk();
     }
 
+    public function test_authenticated_catalog_shows_a_post_logout_form(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/catalog')
+            ->assertOk()
+            ->assertSee('Signed in as '.$user->name)
+            ->assertSee('action="'.route('logout').'"', false)
+            ->assertSee('method="POST"', false)
+            ->assertSee('Log out');
+    }
+
     public function test_login_regenerates_session_and_logout_ends_session(): void
     {
         $user = User::factory()->create(['password' => 'StrongPass123!']);
@@ -35,5 +47,6 @@ class AuthFlowTest extends TestCase
         $this->assertAuthenticatedAs($user);
         $this->post('/logout')->assertRedirect('/login');
         $this->assertGuest();
+        $this->get('/catalog')->assertRedirect('/login');
     }
 }
