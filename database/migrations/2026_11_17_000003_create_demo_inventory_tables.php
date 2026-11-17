@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unique(['user_id', 'sample_key']);
         });
+
         Schema::create('demo_stock_movements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
     public function down(): void
     {
         Schema::dropIfExists('demo_stock_movements');
