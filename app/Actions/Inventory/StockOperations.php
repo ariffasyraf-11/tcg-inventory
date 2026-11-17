@@ -55,7 +55,7 @@ class StockOperations
             throw ValidationException::withMessages(['quantity' => 'Positive quantity and reason (up to 500 characters) required.']);
         }
 
-        $workspaceId = $this->authorize($actor, $variant);
+        $workspaceId = $this->authorize($actor, $variant, $workspace);
 
         DB::transaction(function () use ($actor, $variant, $quantity, $reason, $workspaceId) {
             $item = DB::table('inventory_items')->where('workspace_id', $workspaceId)
