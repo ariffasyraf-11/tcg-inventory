@@ -41,3 +41,6 @@ The existing `/demo` route uses fictional session-scoped inventory, works only i
 ## Cleanup
 
 Test accounts are disposable only when created in a disposable local/test database. To reset a local test database, first verify the active environment and database connection; `php artisan migrate:fresh` destroys all tables and must **never** run against a real or shared database.
+
+## Optional local seed fixtures
+See [15-local-test-seeder.md](15-local-test-seeder.md). Two test identities and stock fixtures can now be created by an explicit local-only seeder with a user-supplied password. This does not create any default production credentials.

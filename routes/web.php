@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PersistentDemoController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
+    Route::post('/demo/database/change', [PersistentDemoController::class, 'change'])->name('demo.persistent.change');
+    Route::post('/demo/database/reset', [PersistentDemoController::class, 'reset'])->name('demo.persistent.reset');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::patch('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
