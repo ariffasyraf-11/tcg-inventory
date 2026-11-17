@@ -98,8 +98,45 @@ class CatalogController extends Controller
         abort_unless(app(WorkspaceAccess::class)->allows($request->user(), $workspace, 'catalog_edit'), 403);
 
         $product->load('variants');
+        $variantIds = $product->variants->modelKeys();
 
-        return view('catalog.edit', compact('workspace', 'product'));
+        $attributeChanges = DB::table('product_variant_attribute_changes as changes')
+            ->leftJoin('users as actors', 'actors.id', '=', 'changes.actor_user_id')
+            ->whereIn('changes.product_variant_id', $variantIds)
+            ->select('changes.product_variant_id', 'changes.attribute', 'changes.old_value', 'changes.new_value', 'changes.created_at', 'changes.id', 'actors.name as actor_name')
+            ->get()
+            ->map(fn ($change) => (object) [
+                'variant_id' => $change->product_variant_id,
+                'field' => str_replace('_', ' ', $change->attribute),
+                'old_value' => $change->old_value,
+                'new_value' => $change->new_value,
+                'created_at' => $change->created_at,
+                'id' => $change->id,
+                'actor_name' => $change->actor_name,
+                'source' => 'attribute',
+            ]);
+
+        $skuChanges = DB::table('product_sku_changes as changes')
+            ->leftJoin('users as actors', 'actors.id', '=', 'changes.actor_user_id')
+            ->whereIn('changes.product_variant_id', $variantIds)
+            ->select('changes.product_variant_id', 'changes.old_sku', 'changes.new_sku', 'changes.created_at', 'changes.id', 'actors.name as actor_name')
+            ->get()
+            ->map(fn ($change) => (object) [
+                'variant_id' => $change->product_variant_id,
+                'field' => 'SKU',
+                'old_value' => $change->old_sku,
+                'new_value' => $change->new_sku,
+                'created_at' => $change->created_at,
+                'id' => $change->id,
+                'actor_name' => $change->actor_name,
+                'source' => 'sku',
+            ]);
+
+        $changeHistory = $attributeChanges->concat($skuChanges)
+            ->sort(fn ($a, $b) => strcmp($b->created_at, $a->created_at) ?: ($b->id <=> $a->id))
+            ->values();
+
+        return view('catalog.edit', compact('workspace', 'product', 'changeHistory'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
