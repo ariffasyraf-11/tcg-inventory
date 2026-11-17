@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PersistentDemoController;
@@ -21,6 +22,8 @@ Route::middleware('guest')->group(function (): void {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function (): void {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::patch('/dashboard/threshold', [DashboardController::class, 'threshold'])->name('dashboard.threshold');
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
     Route::post('/sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/demo/database', [PersistentDemoController::class, 'index'])->name('demo.persistent');
