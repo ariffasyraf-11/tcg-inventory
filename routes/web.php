@@ -5,8 +5,8 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DemoInventoryController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PersistentDemoController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('welcome'));
