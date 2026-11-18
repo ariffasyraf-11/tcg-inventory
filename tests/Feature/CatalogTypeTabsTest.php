@@ -28,7 +28,7 @@ class CatalogTypeTabsTest extends TestCase
         $this->get('/catalog?type=invalid')->assertNotFound();
     }
 
-    public function test_single_edit_page_disables_sku_but_sealed_keeps_sku_update(): void
+    public function test_single_with_sku_can_edit_it_but_sku_less_single_cannot(): void
     {
         $owner = User::factory()->create();
         $workspace = Workspace::create(['owner_user_id' => $owner->id, 'name' => 'Shop']);
@@ -36,8 +36,14 @@ class CatalogTypeTabsTest extends TestCase
         $single->variants()->create(['sku' => 'SINGLE-1']);
         $sealed = Product::create(['workspace_id' => $workspace->id, 'name' => 'Sealed', 'type' => 'sealed']);
         $sealed->variants()->create(['sku' => 'SEALED-1']);
-        $this->actingAs($owner)->get(route('catalog.edit', $single))->assertOk()
-            ->assertSee('SKU editing is disabled for singles')->assertDontSee('Update SKU');
+        $withoutSku = Product::create(['workspace_id' => $workspace->id, 'name' => 'Without SKU', 'type' => 'single']);
+        $withoutSkuVariant = $withoutSku->variants()->create(['sku' => null]);
+        $this->actingAs($owner)->get(route('catalog.edit', $single))->assertOk()->assertSee('Update SKU');
         $this->get(route('catalog.edit', $sealed))->assertOk()->assertSee('Update SKU');
+        $this->get(route('catalog.edit', $withoutSku))->assertOk()->assertSee('SKU editing is unavailable')->assertDontSee('Update SKU');
+        $this->patch(route('catalog.sku.update', $single), ['variant_id' => $single->variants->first()->id, 'sku' => 'SINGLE-2'])->assertRedirect(route('catalog.edit', $single));
+        $this->assertDatabaseHas('product_variants', ['product_id' => $single->id, 'sku' => 'SINGLE-2']);
+        $this->patch(route('catalog.sku.update', $single), ['variant_id' => $single->variants->first()->id, 'sku' => ''])->assertSessionHasErrors('sku');
+        $this->patch(route('catalog.sku.update', $withoutSku), ['variant_id' => $withoutSkuVariant->id, 'sku' => 'NEW-SKU'])->assertSessionHasErrors('sku');
     }
 }

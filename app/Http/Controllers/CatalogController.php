@@ -169,12 +169,15 @@ class CatalogController extends Controller
 
         $data = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
-            'sku' => [$product->type === 'sealed' || $workspace->single_sku_enabled ? 'required' : 'nullable', 'nullable', 'string', 'max:100'],
+            'sku' => ['required', 'string', 'max:100'],
         ]);
         $sku = trim((string) ($data['sku'] ?? ''));
         DB::transaction(function () use ($request, $product, $workspace, $data, $sku): void {
             $variant = $product->variants()->whereKey($data['variant_id'])->lockForUpdate()->firstOrFail();
             $oldSku = $variant->sku;
+            if ($product->type === 'single' && $oldSku === null) {
+                throw ValidationException::withMessages(['sku' => 'SKU editing is unavailable for single cards created without an SKU.']);
+            }
             $newSku = $sku !== '' ? $sku : null;
             if ($oldSku === $newSku) {
                 return;
