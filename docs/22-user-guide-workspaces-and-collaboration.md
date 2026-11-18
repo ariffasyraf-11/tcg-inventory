@@ -72,3 +72,7 @@ Catalog and inventory listings prioritize existing records over actions. Receive
 ## Pagination review
 
 Catalog (20), inventory balances (20), inventory detail movements (30), and invitation inbox (20) already paginate. Inventory balances and stock movements now use independent query keys (`balances_page`, `movements_page`) and show 20 each. Sales history shows 20/page, invitation history and membership lists show 15/page, and dashboard threshold rows show 20/page. Dashboard KPI totals are calculated across all workspace inventory rows, not only the visible page. Product selection dropdowns remain complete for now to avoid preventing selection of off-page variants; searchable selection is a separate future UX task.
+
+## Single-card SKU checkbox on product creation
+
+The workspace owner chooses **Required** or **Optional** in SKU permissions. Required: single-card SKU entry is enabled and mandatory; the optional checkbox is hidden. Optional: a seller may tick **Add SKU to this single card** to enable the SKU input, or leave it unticked to create a SKU-less single. Sealed products always require SKU. Validation enforces the workspace requirement server-side and checks uniqueness; existing SKUs and variant IDs are unaffected.

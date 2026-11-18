@@ -85,8 +85,22 @@ class CatalogTest extends TestCase
 
         $this->post('/catalog', ['name' => 'Sealed', 'type' => 'sealed'])->assertSessionHasErrors('sku');
         $this->patch('/settings/single-sku', ['single_sku_enabled' => '1'])->assertRedirect('/settings');
-        $this->post('/catalog', ['name' => 'Card C', 'type' => 'single'])->assertRedirect('/catalog');
-        $this->assertSame(4, ProductVariant::whereNull('sku')->count());
+        $this->post('/catalog', ['name' => 'Card C', 'type' => 'single'])->assertSessionHasErrors('sku');
+        $this->post('/catalog', ['name' => 'Card C', 'type' => 'single', 'sku' => 'CARD-C'])->assertRedirect('/catalog');
+        $this->assertSame(3, ProductVariant::whereNull('sku')->count());
+    }
+
+    public function test_optional_sku_setting_renders_checkbox_and_required_setting_requires_sku(): void
+    {
+        $user = User::factory()->create();
+        $workspace = Workspace::create(['owner_user_id' => $user->id, 'name' => 'Shop', 'single_sku_enabled' => false]);
+        $this->actingAs($user)->get('/catalog')->assertOk()->assertSee('Add SKU to this single card');
+        $this->post('/catalog', ['name' => 'No SKU', 'type' => 'single'])->assertRedirect('/catalog');
+        $this->post('/catalog', ['name' => 'With SKU', 'type' => 'single', 'use_single_sku' => '1', 'sku' => 'SINGLE-001'])->assertRedirect('/catalog');
+        $this->assertSame(1, ProductVariant::whereNull('sku')->count());
+        $workspace->update(['single_sku_enabled' => true]);
+        $this->post('/catalog', ['name' => 'Missing SKU', 'type' => 'single'])->assertSessionHasErrors('sku');
+        $this->post('/catalog', ['name' => 'Required SKU', 'type' => 'single', 'sku' => 'SINGLE-002'])->assertRedirect('/catalog');
     }
 
     public function test_demo_workspace_cannot_be_modified(): void

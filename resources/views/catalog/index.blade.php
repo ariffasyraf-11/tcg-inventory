@@ -37,10 +37,15 @@
                     <option value="sealed" @selected(old('type') === 'sealed')>Sealed product</option>
                 </select>
             </label>
-            <label class="text-sm font-medium">SKU <span class="text-slate-500">(sealed products only)</span>
-                <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
-                <span class="mt-1 block text-xs text-slate-500">SKU is disabled for singles. Sealed products require SKU.</span>
-            </label>
+            <div class="text-sm font-medium" id="catalog-sku-group">
+                <label for="catalog-sku" class="block">SKU <span id="catalog-sku-status" class="text-slate-500"></span></label>
+                <label id="catalog-single-sku-toggle-label" class="mt-2 flex items-center gap-2 text-sm font-normal">
+                    <input type="checkbox" id="catalog-single-sku-toggle" name="use_single_sku" value="1" @checked(old('use_single_sku', $workspace->single_sku_enabled ? '1' : '0') === '1') class="h-4 w-4 rounded border-slate-300">
+                    Add SKU to this single card
+                </label>
+                <input id="catalog-sku" name="sku" value="{{ old('sku') }}" maxlength="100" class="mt-2 block w-full rounded-lg border border-slate-300 p-2" aria-describedby="catalog-sku-help">
+                <p id="catalog-sku-help" class="mt-1 text-xs text-slate-500">Single-card SKU behavior follows your workspace SKU settings.</p>
+            </div>
             <label class="text-sm font-medium">Condition (singles)
                 <input data-single-field name="condition" list="catalog-condition-suggestions" value="{{ old('condition') }}" maxlength="40" class="mt-1 block w-full rounded-lg border border-slate-300 p-2">
             </label>
@@ -96,6 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!form) return;
     const type = document.getElementById('catalog-product-type');
     const sku = document.getElementById('catalog-sku');
+    const toggle = document.getElementById('catalog-single-sku-toggle');
+    const toggleLabel = document.getElementById('catalog-single-sku-toggle-label');
+    const skuStatus = document.getElementById('catalog-sku-status');
+    const skuHelp = document.getElementById('catalog-sku-help');
+    const singleSkuRequired = @json((bool) $workspace->single_sku_enabled);
     function syncTypeFields() {
         const sealed = type.value === 'sealed';
         form.querySelectorAll('[data-single-field]').forEach(input => {
@@ -106,11 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
             input.disabled = !sealed;
             input.closest('label').classList.toggle('opacity-50', !sealed);
         });
-        sku.disabled = !sealed;
-        sku.required = sealed;
-        sku.closest('label').classList.toggle('opacity-50', !sealed);
+        const enabled = sealed || singleSkuRequired || toggle.checked;
+        toggleLabel.hidden = sealed || singleSkuRequired;
+        toggle.disabled = sealed || singleSkuRequired;
+        sku.disabled = !enabled;
+        sku.required = sealed || singleSkuRequired;
+        skuStatus.textContent = sealed ? '(required for sealed products)' : (singleSkuRequired ? '(required by workspace settings)' : '(optional)');
+        skuHelp.textContent = sealed ? 'Sealed products always require a unique SKU.' : (singleSkuRequired ? 'Your workspace requires a SKU for every new single card.' : 'Tick Add SKU to enter a unique SKU for this card. Leave unticked to use its internal variant ID.');
+        sku.classList.toggle('bg-slate-100', !enabled);
     }
     type.addEventListener('change', syncTypeFields);
+    toggle.addEventListener('change', syncTypeFields);
     syncTypeFields();
 });
 </script></body></html>
