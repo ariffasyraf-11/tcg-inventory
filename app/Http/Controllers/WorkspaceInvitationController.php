@@ -20,7 +20,7 @@ class WorkspaceInvitationController extends Controller
 
         return view('workspaces.invitations', [
             'workspace' => $workspace,
-            'invitations' => WorkspaceInvitation::where('workspace_id', $workspace->id)->latest()->get(),
+            'invitations' => WorkspaceInvitation::where('workspace_id', $workspace->id)->latest()->paginate(15),
         ]);
     }
 

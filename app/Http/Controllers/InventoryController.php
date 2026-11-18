@@ -28,7 +28,7 @@ class InventoryController extends Controller
                 ->where('sku', 'like', '%'.$search.'%')
                 ->orWhereHas('product', fn ($product) => $product->where('name', 'like', '%'.$search.'%'))))
             ->orderBy('id')
-            ->paginate(20)
+            ->paginate(20, ['*'], 'balances_page')
             ->withQueryString();
 
         $variants = ProductVariant::query()
@@ -41,8 +41,8 @@ class InventoryController extends Controller
             ->whereHas('item', fn ($query) => $query->where('workspace_id', $workspace->id))
             ->with(['item.variant.product', 'batch'])
             ->latest('id')
-            ->limit(30)
-            ->get();
+            ->paginate(20, ['*'], 'movements_page')
+            ->withQueryString();
 
         return view('inventory.index', compact('workspace', 'items', 'variants', 'movements', 'search'));
     }
