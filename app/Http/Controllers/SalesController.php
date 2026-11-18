@@ -19,7 +19,7 @@ class SalesController extends Controller
             ->whereHas('product', fn ($query) => $query->where('workspace_id', $workspace?->id))
             ->with('product')->orderBy('id')->get();
 
-        $sales = DB::table('sales')->where('workspace_id', $workspace?->id)->orderByDesc('id')->limit(30)->get();
+        $sales = DB::table('sales')->where('workspace_id', $workspace?->id)->orderByDesc('id')->paginate(20);
 
         return view('sales.index', compact('variants', 'sales'));
     }

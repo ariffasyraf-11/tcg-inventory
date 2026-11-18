@@ -23,7 +23,7 @@ class ProductImageTest extends TestCase
 
         $this->actingAs($user)->post("/catalog/{$product->id}/image", [
             'image' => UploadedFile::fake()->image('front.jpg'),
-        ])->assertRedirect('/catalog');
+        ])->assertRedirect(route('catalog.edit', $product));
 
         $firstPath = $product->fresh()->image_path;
         Storage::disk('local')->assertExists($firstPath);
@@ -31,12 +31,12 @@ class ProductImageTest extends TestCase
 
         $this->post("/catalog/{$product->id}/image", [
             'image' => UploadedFile::fake()->image('new.png'),
-        ])->assertRedirect('/catalog');
+        ])->assertRedirect(route('catalog.edit', $product));
 
         Storage::disk('local')->assertMissing($firstPath);
         Storage::disk('local')->assertExists($product->fresh()->image_path);
 
-        $this->delete("/catalog/{$product->id}/image")->assertRedirect('/catalog');
+        $this->delete("/catalog/{$product->id}/image")->assertRedirect(route('catalog.edit', $product));
         $this->assertNull($product->fresh()->image_path);
     }
 

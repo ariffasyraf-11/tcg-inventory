@@ -17,7 +17,7 @@ class WorkspaceMemberController extends Controller
 
         return view('workspaces.members', [
             'workspace' => $workspace,
-            'members' => $workspace->memberships()->with('user:id,name,email')->latest()->get(),
+            'members' => $workspace->memberships()->with('user:id,name,email')->latest()->paginate(15),
         ]);
     }
 

@@ -64,3 +64,11 @@ Catalog has two tabs, **Singles & Used** and **Sealed Products**, filtering the 
 ## Collapsible catalog creation and SKU-free singles
 
 The catalog opens with the registered product list prominent. The **Add a product** disclosure is closed by default and expands automatically when validation fails. Selecting **Single card** disables SKU entry; selecting **Sealed product** enables and requires SKU. New singles created through the form are stored with no SKU and identified by internal variant ID. API submissions can still supply an optional SKU for compatibility. Previously saved singles SKUs remain untouched for historical imports and records. The workspace singles-SKU setting is retained for compatibility but no longer controls new catalog creation.
+
+## UX disclosures and image editing (pre-Phase-7)
+
+Catalog and inventory listings prioritize existing records over actions. Receive/adjust stock, record sale, stock thresholds, and invitation creation use native keyboard-accessible disclosures that are collapsed by default and expand when validation fails. Settings groups are individually expandable. Product image upload/replacement/removal is no longer embedded in catalog list rows: the owner manages it on **Edit product**, accessible from the catalog and inventory detail. Image changes redirect back to the edit page. Inventory details continue to show the image read-only. Existing image authorization, size and file validation are retained. No Phase 7 work is included.
+
+## Pagination review
+
+Catalog (20), inventory balances (20), inventory detail movements (30), and invitation inbox (20) already paginate. Inventory balances and stock movements now use independent query keys (`balances_page`, `movements_page`) and show 20 each. Sales history shows 20/page, invitation history and membership lists show 15/page, and dashboard threshold rows show 20/page. Dashboard KPI totals are calculated across all workspace inventory rows, not only the visible page. Product selection dropdowns remain complete for now to avoid preventing selection of off-page variants; searchable selection is a separate future UX task.

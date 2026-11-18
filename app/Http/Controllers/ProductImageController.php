@@ -52,7 +52,7 @@ class ProductImageController extends Controller
             Storage::disk('local')->delete($oldPath);
         }
 
-        return to_route('catalog.index')->with('status', 'Product image updated.');
+        return to_route('catalog.edit', $product)->with('status', 'Product image updated.');
     }
 
     public function destroy(Request $request, Product $product): RedirectResponse
@@ -67,7 +67,7 @@ class ProductImageController extends Controller
             Storage::disk('local')->delete($oldPath);
         }
 
-        return to_route('catalog.index')->with('status', 'Product image removed.');
+        return to_route('catalog.edit', $product)->with('status', 'Product image removed.');
     }
 
     private function authorizeOwner(Request $request, Product $product): void

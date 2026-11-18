@@ -14,20 +14,25 @@ class DashboardController extends Controller
         $workspace = DB::table('workspaces')->where('owner_user_id', $request->user()->id)->first();
         $workspaceId = $workspace?->id;
 
-        $items = DB::table('inventory_items')
+        $itemQuery = DB::table('inventory_items')
             ->join('product_variants', 'product_variants.id', '=', 'inventory_items.product_variant_id')
             ->join('products', 'products.id', '=', 'product_variants.product_id')
             ->where('inventory_items.workspace_id', $workspaceId)
             ->select('inventory_items.*', 'products.name', 'product_variants.sku')
-            ->orderBy('products.name')->get();
+            ->orderBy('products.name');
+
+        $items = (clone $itemQuery)->paginate(20);
+        $variantCount = (clone $itemQuery)->count();
+        $totalUnits = (clone $itemQuery)->sum('inventory_items.quantity_on_hand');
+        $lowStockCount = (clone $itemQuery)->whereColumn('inventory_items.quantity_on_hand', '<=', 'inventory_items.minimum_stock_level')->count();
 
         $sales = DB::table('sales')->where('workspace_id', $workspaceId);
 
         return view('dashboard.index', [
             'items' => $items,
-            'variantCount' => $items->count(),
-            'totalUnits' => $items->sum('quantity_on_hand'),
-            'lowStock' => $items->filter(fn ($item) => $item->quantity_on_hand <= $item->minimum_stock_level),
+            'variantCount' => $variantCount,
+            'totalUnits' => $totalUnits,
+            'lowStockCount' => $lowStockCount,
             'saleCount' => (clone $sales)->count(),
             'revenue' => (clone $sales)->sum('total_revenue'),
             'cost' => (clone $sales)->sum('total_cost'),
