@@ -23,7 +23,7 @@ class ProductImageTest extends TestCase
 
         $this->actingAs($user)->post("/catalog/{$product->id}/image", [
             'image' => UploadedFile::fake()->image('front.jpg'),
-        ])->assertRedirect('/catalog');
+        ])->assertRedirect(route('catalog.edit', $product));
 
         $firstPath = $product->fresh()->image_path;
         Storage::disk('local')->assertExists($firstPath);
