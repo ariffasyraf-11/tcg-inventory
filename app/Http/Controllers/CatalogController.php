@@ -175,9 +175,6 @@ class CatalogController extends Controller
         DB::transaction(function () use ($request, $product, $workspace, $data, $sku): void {
             $variant = $product->variants()->whereKey($data['variant_id'])->lockForUpdate()->firstOrFail();
             $oldSku = $variant->sku;
-            if ($product->type === 'single' && $oldSku === null) {
-                throw ValidationException::withMessages(['sku' => 'SKU editing is unavailable for single cards created without an SKU.']);
-            }
             $newSku = $sku !== '' ? $sku : null;
             if ($oldSku === $newSku) {
                 return;

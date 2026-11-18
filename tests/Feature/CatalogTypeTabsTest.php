@@ -40,10 +40,12 @@ class CatalogTypeTabsTest extends TestCase
         $withoutSkuVariant = $withoutSku->variants()->create(['sku' => null]);
         $this->actingAs($owner)->get(route('catalog.edit', $single))->assertOk()->assertSee('Update SKU');
         $this->get(route('catalog.edit', $sealed))->assertOk()->assertSee('Update SKU');
-        $this->get(route('catalog.edit', $withoutSku))->assertOk()->assertSee('SKU editing is unavailable')->assertDontSee('Update SKU');
+        $this->get(route('catalog.edit', $withoutSku))->assertOk()->assertSee('This single card has no SKU')->assertSee('Assign SKU');
         $this->patch(route('catalog.sku.update', $single), ['variant_id' => $single->variants->first()->id, 'sku' => 'SINGLE-2'])->assertRedirect(route('catalog.edit', $single));
         $this->assertDatabaseHas('product_variants', ['product_id' => $single->id, 'sku' => 'SINGLE-2']);
         $this->patch(route('catalog.sku.update', $single), ['variant_id' => $single->variants->first()->id, 'sku' => ''])->assertSessionHasErrors('sku');
-        $this->patch(route('catalog.sku.update', $withoutSku), ['variant_id' => $withoutSkuVariant->id, 'sku' => 'NEW-SKU'])->assertSessionHasErrors('sku');
+        $this->patch(route('catalog.sku.update', $withoutSku), ['variant_id' => $withoutSkuVariant->id, 'sku' => 'NEW-SKU'])->assertRedirect(route('catalog.edit', $withoutSku));
+        $this->assertDatabaseHas('product_variants', ['id' => $withoutSkuVariant->id, 'sku' => 'NEW-SKU']);
+        $this->assertDatabaseHas('product_sku_changes', ['product_variant_id' => $withoutSkuVariant->id, 'old_sku' => null, 'new_sku' => 'NEW-SKU']);
     }
 }
