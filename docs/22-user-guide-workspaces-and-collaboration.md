@@ -76,3 +76,7 @@ Catalog (20), inventory balances (20), inventory detail movements (30), and invi
 ## Single-card SKU checkbox on product creation
 
 The workspace owner chooses **Required** or **Optional** in SKU permissions. Required: single-card SKU entry is enabled and mandatory; the optional checkbox is hidden. Optional: a seller may tick **Add SKU to this single card** to enable the SKU input, or leave it unticked to create a SKU-less single. Sealed products always require SKU. Validation enforces the workspace requirement server-side and checks uniqueness; existing SKUs and variant IDs are unaffected.
+
+## Editing existing single-card SKUs
+
+On Edit product, a single card with an existing SKU now shows the same SKU update form as a sealed product. Authorized catalog editors may replace its SKU with another non-empty unique SKU. SKU changes retain actor and old/new values in the audit history; external CSV references must be updated separately. Single cards originally created without an SKU may now be assigned an SKU from the product edit page. A highlighted amber note explains that the internal variant ID is preserved, the assignment is audited, and external CSV references may need review. Workspace Required/Optional setting governs creation; it does not remove an existing SKU.
